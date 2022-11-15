@@ -1,0 +1,7 @@
+MIC CHECK:
+arecord -d 5 -r 44100 test.wav
+aplay test.wav
+(https://github.com/AssemblyAI/youtube-tutorials/tree/main/raspberry-pi-speech-recognition)
+
+VOSK:
+https://alphacephei.com/vosk/
