@@ -5,3 +5,13 @@ aplay test.wav
 
 VOSK:
 https://alphacephei.com/vosk/
+
+SYNTHS:
+espeak -p 0 -a 100 -s 130 "let the demon take your soul"
+echo "let the demon take your soul" | festival --tts
+(sudo nano ~/.festivalrc)
+flite --setf int_f0_target_mean=50 --setf duration_stretch=1.5 -voice kal16 -t "let the demon take your soul"
+spd-say -l en -p -100 -r -50 -i -50 "let the demon take your soul"
+
+(female:
+(pico2wave -w test.wav "let the demon take your soul" && aplay test.wav)
