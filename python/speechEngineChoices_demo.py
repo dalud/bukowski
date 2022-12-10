@@ -3,6 +3,7 @@ import os
 
 line = '"let the demon take your soul"'
 line2 = '"tonight, drinking Singha, malt liquor from, Thailand, and listening to, Wagner. I can’t believe that, he is not in, the other, room, or around the, corner, or alive, someplace, tonight. and he is, of course. as I am taken, by the sound of, him. and little goosebumps, run along, both of my, arms. then a, chill. he’s here, now."'
+
 while True:
     print("1. eSpeak")
     print("2. Festival")
@@ -10,7 +11,7 @@ while True:
     choice = input("Select option:")
 
     if choice == "1":
-        os.system('espeak -p 0 -a 60 -s 130 {0}'.format(line2))
+        os.system('espeak -p 0 -a 120 -s 120 -v english-us {0}'.format(line2))
     elif choice == "2":
         os.system('echo {0} | festival --tts'.format(line2))
     elif choice == "3":

@@ -7,7 +7,7 @@ VOSK:
 https://alphacephei.com/vosk/
 
 SYNTHS:
-espeak -p 0 -a 100 -s 130 "let the demon take your soul"
+espeak -p 0 -a 100 -s 120 -v english-us "let the demon take your soul"
 echo "let the demon take your soul" | festival --tts
 (sudo nano ~/.festivalrc)
 flite --setf int_f0_target_mean=50 --setf duration_stretch=1.5 -voice kal16 -t "let the demon take your soul"
