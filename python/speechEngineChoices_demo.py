@@ -11,13 +11,12 @@ while True:
     choice = input("Select option:")
 
     if choice == "1":
-        os.system('espeak -p 0 -a 120 -s 120 -v english-us {0}'.format(line2))
+        os.system('espeak -p 0 -a 120 -s 120 -v english-us -f monologi.txt')
     elif choice == "2":
-        os.system('echo {0} | festival --tts'.format(line2))
+        os.system('festival monologi.txt --tts')
     elif choice == "3":
-        os.system('flite --setf int_f0_target_mean=50 --setf duration_stretch=1.4 -voice kal16 -t {0}'.format(line2))
+        os.system('flite --setf int_f0_target_mean=50 --setf duration_stretch=1.4 -voice kal16 -f monologi.txt')
     elif choice == "4":
         os.system('spd-say -l en -p -100 -r -50 -i -40 {0}'.format(line2))
     elif choice == "5":
         os.system('pico2wave -w test.wav {0} && aplay test.wav'.format(line2))
-
