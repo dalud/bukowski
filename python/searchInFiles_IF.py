@@ -1,16 +1,13 @@
 import os
 
-#dir_path = r'C:\Users\jaakk\OneDrive\Documents\poems'
-#word = "cat"
-
-class SearchInFiles:
+class Searcher:
     def __init__(self, path):
         self.dir_path = path
 
     def parseSentence(self, content, word):
         # search previous punctuation
-        start = 0;
-        end = 0;
+        start = 0
+        end = 0
         # seek start
         for x in range(content.index(word), 0, -1):
             if content[x] == ".":
@@ -25,9 +22,9 @@ class SearchInFiles:
 
     def search(self, word):
         # iterate each file in a directory
-        for file in os.listdir(dir_path):
-            print(file)
-            cur_path = os.path.join(dir_path, file)
+        for file in os.listdir(self.dir_path):
+            #print(file)
+            cur_path = os.path.join(self.dir_path, file)
             # check if it is a file
             if os.path.isfile(cur_path):
                 with open(cur_path, 'r') as file:
@@ -36,6 +33,4 @@ class SearchInFiles:
                         # rewind and find sentence with matching string
                         file.seek(0)
                         content = file.read()
-                        print(parseSentence(content, word))
-                        break
-
+                        return self.parseSentence(content, word)
