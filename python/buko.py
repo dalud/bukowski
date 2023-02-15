@@ -6,5 +6,5 @@ dir_path = r'C:\Users\jaakk\OneDrive\Documents\poems'
 searcher = Searcher(dir_path)
 
 #ear.listen(True)
-word = "silence"
+word = "morning"
 print(searcher.search(word))
