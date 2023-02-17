@@ -31,8 +31,10 @@ class Ear:
                         self.recognizerResult = self.recognizer.Result()
                         self.resultDict = json.loads(self.recognizerResult)
                         if not self.resultDict.get("text", "") == "":
-                            print("I heard: ", self.resultDict.get("text", ""))
-                            print("I am listening...")
+                            reply = self.resultDict.get("text", "")
+                            print("I heard: ", reply)
+                            return reply
+                            #print("I am listening...")
                         else:
                             print("no input sound")
 
