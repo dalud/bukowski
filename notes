@@ -15,3 +15,8 @@ spd-say -l en -p -100 -r -50 -i -50 "let the demon take your soul"
 
 (female:
 (pico2wave -w test.wav "let the demon take your soul" && aplay test.wav)
+
+NLTK:
+pip install --user -U nltk
+python -m nltk.downloader popular
+pip install rake-nltk

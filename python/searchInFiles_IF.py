@@ -1,8 +1,14 @@
 import os
+import re
+from random import random
+
+ponder = ["let me see", "i wonder", "maybe?"]
 
 class Searcher:
     def __init__(self, path):
         self.dir_path = path
+        #print(os.listdir(self.dir_path))
+        for file in os.listdir(self.dir_path): print(file)
 
     def parseSentence(self, content, word):
         # search previous punctuation
@@ -16,14 +22,13 @@ class Searcher:
         # seek end
         for x in range(content.index(word), len(content)):
             if content[x] == ".":
-                end = x
+                end = x+1
                 break
         return content[start:end]
 
     def search(self, word):
         # iterate each file in a directory
         for file in os.listdir(self.dir_path):
-            #print(file)
             cur_path = os.path.join(self.dir_path, file)
             # check if it is a file
             if os.path.isfile(cur_path):
@@ -34,3 +39,12 @@ class Searcher:
                         file.seek(0)
                         content = file.read()
                         return self.parseSentence(content, word)
+
+    def findNext(self, word, played, mouth):
+        mouth.speak(ponder[(int)(random()*len(ponder))])
+        for file in os.listdir(self.dir_path):
+            for r in re.findall(r"([^.]*?{0}[^.]*\.)".format(word), open(os.path.join(self.dir_path, file)).read()):
+                if r not in played:
+                    return r
+
+    
