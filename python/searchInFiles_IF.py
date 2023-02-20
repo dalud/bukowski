@@ -2,49 +2,56 @@ import os
 import re
 from random import random
 
-ponder = ["let me see", "i wonder", "maybe?"]
 
 class Searcher:
     def __init__(self, path):
         self.dir_path = path
-        #print(os.listdir(self.dir_path))
         for file in os.listdir(self.dir_path): print(file)
 
-    def parseSentence(self, content, word):
-        # search previous punctuation
+    def parse(self, content, index):
+        # search previous and next punctuation
         start = 0
         end = 0
         # seek start
-        for x in range(content.index(word), 0, -1):
-            if content[x] == ".":
+        for x in range(index, 0, -1):
+            if content[x] == "." or content[x] == "!" or content[x] == "?":
                 start = x+1
                 break
         # seek end
-        for x in range(content.index(word), len(content)):
-            if content[x] == ".":
-                end = x+1
+        for x in range(index, len(content)):
+            if content[x] == "." or content[x] == "!" or content[x] == "?":
+                end = x
                 break
-        return content[start:end]
+        res = content[start:end].replace('"', '').replace('“', '')
+        # TODO: remove lines with only numbers
+        return self.sanitize(res)
 
-    def search(self, word):
+    def find(self, word, played):
         # iterate each file in a directory
         for file in os.listdir(self.dir_path):
             cur_path = os.path.join(self.dir_path, file)
+            print(file)
             # check if it is a file
             if os.path.isfile(cur_path):
-                with open(cur_path, 'r') as file:
+                with open(cur_path, 'r') as file:                    
                     # read all content of a file and search string
-                    if word in file.read():
-                        # rewind and find sentence with matching string
-                        file.seek(0)
-                        content = file.read()
-                        return self.parseSentence(content, word)
-
-    def findNext(self, word, played, mouth):
-        mouth.speak(ponder[(int)(random()*len(ponder))])
-        for file in os.listdir(self.dir_path):
-            for r in re.findall(r"([^.]*?{0}[^.]*\.)".format(word), open(os.path.join(self.dir_path, file)).read()):
-                if r not in played:
-                    return r
-
-    
+                    content = file.read().lower()
+                    for x in range(content.count(word)):
+                        i = content.find(word)
+                        if not i: continue
+                        #print(i)
+                        reply = self.parse(content, i)
+                        if reply in played:
+                            #print("already said")
+                            i = content.find(word, i+1)
+                            if i > 0: reply = self.parse(content, i)
+                            if i < 0: continue
+                        if not reply in played: return reply
+                        
+    def sanitize(self, string):
+        reply = []
+        for line in string.splitlines():
+            #print(line)
+            if not line == "" and not line.isdigit():
+                reply.append(line)
+        return reply

@@ -22,10 +22,7 @@ while True:
             if not  s == "huh":
                 print(s)
                 mouth.speak(s+"?")
-                reply = searcher.search(" "+s+" ")                
-                while reply in played:
-                    reply = searcher.findNext(" "+s+" ", played, mouth)
-                    if not reply: break
+                reply = searcher.find(s, played)
                 if reply and not reply in played:
                     mouth.speak(affirm[(int)(random()*len(affirm))])
                     print(reply)
