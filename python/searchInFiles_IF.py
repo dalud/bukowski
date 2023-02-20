@@ -52,6 +52,9 @@ class Searcher:
         reply = []
         for line in string.splitlines():
             #print(line)
-            if not line == "" and not line.isdigit():
+            if not self.exclude(line):
                 reply.append(line)
-        return reply
+        return ' '.join(reply)
+
+    def exclude(self, line):
+        return line == "" or line.isdigit() or "\ufeff2" in line or "”" in line
