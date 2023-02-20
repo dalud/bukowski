@@ -32,4 +32,4 @@ while True:
                     if len(played) > 20: played.clear()
                     break
                 else: mouth.speak(decline[(int)(random()*len(decline))])
-    else: mouth.speak(decline[(int)(random()*len(decline))])
+    else: mouth.speak("Sorry?")
