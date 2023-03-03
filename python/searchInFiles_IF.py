@@ -30,12 +30,12 @@ class Searcher:
         # iterate each file in a directory
         for file in os.listdir(self.dir_path):
             cur_path = os.path.join(self.dir_path, file)
-            print(file)
+            #print(file)
             # check if it is a file
             if os.path.isfile(cur_path):
-                with open(cur_path, 'r') as file:                    
+                with open(cur_path, 'r') as _file:                    
                     # read all content of a file and search string
-                    content = file.read().lower()            
+                    content = _file.read().lower()            
                     for x in range(content.count(word)):
                         i = content.find(word)
                         if not i: continue
@@ -44,7 +44,9 @@ class Searcher:
                             i = content.find(word, i+1)
                             if i > 0: reply = self.parse(content, i)
                             if i < 0: continue
-                        if word in reply.split() and not reply in played: return reply
+                        if word in reply.split() and not reply in played:
+                            print(file)
+                            return reply
                             
     def sanitize(self, string):
         reply = []
