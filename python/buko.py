@@ -10,7 +10,7 @@ sb = SubjectParser()
 dir_path = r'/home/pi/bukowski/works'
 searcher = Searcher(dir_path)
 played = []
-affirm = ['yes', 'yeah', 'sure', 'ofcourse!', 'definitely', 'well']
+affirm = ['yes', 'yeah', 'sure', 'ofcourse!', 'definitely', 'well', 'okay, baby']
 decline = ['no', "I don't think so", "sorry, no", "probably not", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
 
