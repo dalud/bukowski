@@ -1,12 +1,16 @@
 import os
 import re
 from random import random
+import sys
 
+flush = sys.stdout.flush
 
 class Searcher:
     def __init__(self, path):
         self.dir_path = path
-        for file in os.listdir(self.dir_path): print(file)
+        for file in os.listdir(self.dir_path): 
+            #print(file)
+            flush()
 
     def parse(self, content, index):
         # search previous and next punctuation
@@ -45,7 +49,8 @@ class Searcher:
                             if i > 0: reply = self.parse(content, i)
                             if i < 0: continue
                         if word in reply.split() and not reply in played:
-                            print(file)
+                            #print(file)
+                            flush()
                             return reply
                             
     def sanitize(self, string):
