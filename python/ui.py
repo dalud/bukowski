@@ -24,11 +24,11 @@ def enqueue_output(out, queue):
 #parser.read('/home/pi/robokerho/config')
 
 # Build UI
-layout = [[ui.Text("Robohemian: Bukowski", font="arial 16 bold")],
+layout = [#[ui.Text("Robohemian: Bukowski", font="DisposableDroidBB 16 bold", background_color="black")],
           #[ui.Button("CONFIG", button_color="orange"), ui.Button("RUN", button_color="green"), ui.Button("STOP", button_color="brown"), ui.Button("SHUTDOWN")],
-          [ui.Button("RUN", button_color="green"), ui.Button("STOP", button_color="brown"), ui.Button("SHUTDOWN")],
-          [ui.Multiline(font="DisposableDroidBB 36 bold", reroute_stdout=True, reroute_stderr=True, auto_refresh=True, autoscroll=True, expand_x=True, expand_y=True, no_scrollbar=True, background_color="black", text_color="green")]]
-window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), default_button_element_size=(56, 4), auto_size_buttons=False, resizable=True)
+          [ui.Button("RUN", button_color="green on black"), ui.Button("STOP", button_color="red on black"), ui.Button("SHUTDOWN", button_color="grey on black")],
+          [ui.Multiline(reroute_stdout=True, reroute_stderr=True, auto_refresh=True, autoscroll=True, expand_x=True, expand_y=True, no_scrollbar=True, background_color="black", text_color="green")]]
+window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(16, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
 
 # Helpers
 def start(cmd):
