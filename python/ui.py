@@ -41,6 +41,7 @@ def start(cmd):
 while True:
     event, values = window.read(10)
     window.maximize()
+    window.TKroot["cursor"] = "none"
     #print("Testing font...")
 
     if event == "CONFIG":
