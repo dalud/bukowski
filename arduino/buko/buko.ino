@@ -1,17 +1,19 @@
 #include <AccelStepper.h>
 
 AccelStepper shoulder(1, 10, 11);
-int sh = -3000; // Motor max
+int sh = -3000;
 AccelStepper spreader(1, 8, 9);
 int sp = 2000;
 AccelStepper elbow(1, 12, 13);
-int e = 3000; // -6000 rälläkkä
+int e = 3000;
 int speedo = 2000;
 int accel = 1500;
 int speedo_elbow = 20000;
 
 int sip = 2;
-int fill = 3;
+int tap = 3;
+int tukos = 4;
+int nielu = 6;
 
 String command;
 
@@ -28,8 +30,12 @@ void setup() {
   // Drink
   pinMode(sip, OUTPUT);
   digitalWrite(sip, HIGH);
-  pinMode(fill, OUTPUT);
-  digitalWrite(fill, HIGH);
+  pinMode(tap, OUTPUT);
+  digitalWrite(tap, HIGH);
+  pinMode(tukos, OUTPUT);
+  digitalWrite(tukos, HIGH);
+  pinMode(nielu, OUTPUT);
+  digitalWrite(nielu, HIGH);
 
   // Built in LED
   pinMode(LED_BUILTIN, OUTPUT);
@@ -37,7 +43,6 @@ void setup() {
   
   // activate debug logging
   logita = false;
-  //logita = true;
   // kiekka < maxi = loop speed
   // with log, set kiekka lower
   if(logita) {
@@ -92,8 +97,8 @@ void loop() {
 
 
   if(logita) {
-    Serial.print(digitalRead(2));
-    Serial.println(": " +command);
+    //Serial.print(digitalRead(2));
+    //Serial.println(": " +command);
   }
 
   // Motion
@@ -101,32 +106,46 @@ void loop() {
     zeroMotors();
   }
   
-  if(command == "sh") { // Hail
-    // if(logita) Serial.println(shoulder.currentPosition());
-    shoulder.moveTo(sh);
+  if(command.startsWith("sh")) { // Hail
+    if(logita) Serial.println(shoulder.currentPosition());
+    // Custom position
+    if(command.length() > 2) shoulder.moveTo(command.substring(2).toInt());
+    // Default max
+    else shoulder.moveTo(sh);
     shoulder.run();
   }
-  if(command == "sp") { // Spreader
-    // if(logita) Serial.println(spreader.currentPosition());
-    spreader.moveTo(sp);
+  if(command.startsWith("sp")) { // Spreader
+    if(logita) Serial.println(spreader.currentPosition());
+    if(command.length() > 2) spreader.moveTo(command.substring(2).toInt());
+    else spreader.moveTo(sp);
     spreader.run();    
   }
-  if(command == "e") { // Elbow
-    // if(logita) Serial.println(elbow.currentPosition());
-    elbow.moveTo(e);
+  if(command.startsWith("e")) { // Elbow
+    if(logita) Serial.println(elbow.currentPosition());
+    if(command.length() > 1) elbow.moveTo(command.substring(1).toInt());
+    else elbow.moveTo(e);
     elbow.run();
+  }
+  if(command == "d") { // Drink
+    drink();
+  }
+  if(command == "f") { // Fill
+    fill();
+  }
+  if(command == "n") { // Nielu
+    fillNielu();
   }
   if(command == "1") { // Poses
     pose(1);
   }
   if(command == "2") {
-    pose(2);
+    // pose(2); // Älä riko lasia
   }
   if(command == "3") {
     pose(3);
   }
   if(command == "4") {
-    pose(4);
+    // pose(4);
   }
   if(command == "5") {
     pose(5);
@@ -137,9 +156,8 @@ void loop() {
   if(command == "7") {
     pose(7);
   }
-
-  if(command == "d") {
-    drink();
+  if(command == "8") {
+    pose(8);
   }
 }
 
@@ -210,12 +228,47 @@ void pose(int pose) {
       elbow.moveTo(e);
       elbow.run();
       break;
+    case 8: // Fill it up
+      shoulder.moveTo(-2000); // -3000 current max
+      shoulder.run();
+      spreader.moveTo(0);
+      spreader.run();
+      elbow.moveTo(2000); // 3000
+      elbow.run();
+      break;
   }
 }
 
 void drink() {
     digitalWrite(sip, LOW);
-    delay(2000);
+    delay(5000);
     digitalWrite(sip, HIGH);
     command = "";
+}
+
+void fill() {
+    digitalWrite(tap, LOW);
+    delay(3000);
+    digitalWrite(tap, HIGH);
+    command = "";
+}
+
+void block() {
+    digitalWrite(tukos, LOW);
+    digitalWrite(nielu, LOW);
+    delay(1000);
+    digitalWrite(tukos, HIGH);
+    digitalWrite(nielu, HIGH);
+    command = "";
+}
+
+void fillNielu() {
+  digitalWrite(tukos, LOW);
+  digitalWrite(nielu, LOW);
+  digitalWrite(tap, LOW);
+  delay(4000);
+  digitalWrite(tukos, HIGH);
+  digitalWrite(nielu, HIGH);
+  digitalWrite(tap, HIGH);
+  command = "";
 }
