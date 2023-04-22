@@ -101,11 +101,12 @@ void loop() {
     //Serial.println(": " +command);
   }
 
-  // Motion
+  // Reset
   if(command == "z" || command == "0") {
     zeroMotors();
   }
   
+  // Manual arm positioning 
   if(command.startsWith("sh")) { // Hail
     if(logita) Serial.println(shoulder.currentPosition());
     // Custom position
@@ -126,15 +127,19 @@ void loop() {
     else elbow.moveTo(e);
     elbow.run();
   }
+
+  // Others, letkusto
   if(command == "d") { // Drink
     drink();
   }
-  if(command == "f") { // Fill
+  if(command == "f") { // Fill tuoppi
     fill();
   }
   if(command == "n") { // Nielu
     fillNielu();
   }
+
+  // Set arm poses
   if(command == "1") { // Poses
     pose(1);
   }
@@ -143,7 +148,7 @@ void loop() {
   }
   if(command == "3") {
     pose(3);
-  }
+  } 
   if(command == "4") {
     // pose(4);
   }
@@ -172,6 +177,7 @@ void zeroMotors() {
 
 void pose(int pose) {
   switch(pose) {
+    // Rewrite poses 1-7 as appropriate
     case 1:
       shoulder.moveTo(sh);
       shoulder.run();
@@ -228,7 +234,7 @@ void pose(int pose) {
       elbow.moveTo(e);
       elbow.run();
       break;
-    case 8: // Fill it up
+    case 8: // Fill 'er up
       shoulder.moveTo(-2000); // -3000 current max
       shoulder.run();
       spreader.moveTo(0);
