@@ -12,10 +12,10 @@ int speedo = 2000;
 int accel = 1500;
 int speedo_elbow = 20000;
 
-int sip = 2;
-int tap = 3;
-int tukos = 4;
-int nielu = 6;
+int sip = 2; // Galley pump (1.)
+int tap = 3; // Pilge pump (2.)
+int tukos = 4; // Mellu
+int nielu = 5; // Sirai
 
 String command;
 
@@ -152,7 +152,7 @@ void loop() {
   }
 
   // Set arm poses
-  if(command == "1") { // Poses
+  if(command == "1") { // Perus tuoppi lepo
     pose(1);
   }
   if(command == "2") {
@@ -276,17 +276,8 @@ void drink() {
 
 void fill() {
     digitalWrite(tap, LOW);
-    delay(3000);
+    delay(6000);
     digitalWrite(tap, HIGH);
-    command = "";
-}
-
-void block() {
-    digitalWrite(tukos, LOW);
-    digitalWrite(nielu, LOW);
-    delay(1000);
-    digitalWrite(tukos, HIGH);
-    digitalWrite(nielu, HIGH);
     command = "";
 }
 
@@ -294,7 +285,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(4000);
+  delay(20000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
