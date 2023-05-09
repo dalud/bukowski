@@ -28,7 +28,7 @@ layout = [#[ui.Text("Robohemian: Bukowski", font="DisposableDroidBB 16 bold", ba
           #[ui.Button("CONFIG", button_color="orange"), ui.Button("RUN", button_color="green"), ui.Button("STOP", button_color="brown"), ui.Button("SHUTDOWN")],
           [ui.Button("RUN", button_color="green on black"), ui.Button("STOP", button_color="red on black"), ui.Button("SHUTDOWN", button_color="grey on black")],
           [ui.Multiline(reroute_stdout=True, reroute_stderr=True, auto_refresh=True, autoscroll=True, expand_x=True, expand_y=True, no_scrollbar=True, background_color="black", text_color="green")]]
-window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(16, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
+window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(13, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
 
 # Helpers
 def start(cmd):
