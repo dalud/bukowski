@@ -4,8 +4,6 @@ from searchInFiles_IF import Searcher
 from speak_IF import Mouth
 from nltk_IF import SubjectParser
 from random import random
-import asyncio
-from delayedPrint_IF import DelayedPrint
 
 flush = sys.stdout.flush
 
@@ -14,7 +12,6 @@ mouth = Mouth()
 sb = SubjectParser()
 dir_path = r'/home/pi/bukowski/works'
 searcher = Searcher(dir_path)
-printer = DelayedPrint(.05)
 played = []
 affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
@@ -29,14 +26,11 @@ while True:
     #TODO: if subprocess speaking DO Not get new subject
     cue = ear.listen(True)
     subject = sb.parse(cue)
-    #print(subject)
     flush()
     if subject:
         for s in subject:
             if not  s == "huh":
-                #print(s)
                 flush()
-                #mouth.speak(s+"?")
                 reply = searcher.find(s, played)
                 if reply and not reply in played:
                     mouth.speak(s+"?")
@@ -45,9 +39,7 @@ while True:
                     flush()
                     mouth.speakAsync(reply)
                     played.append(reply)
-                    printer.print(reply)
-                    flush()
-                    #print("covered:" +str(len(played)))
+                    print(":msg:"+reply)
                     flush()
                     if len(played) > 50: played.clear()
                     break

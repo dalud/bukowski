@@ -1,15 +1,14 @@
-import asyncio
 import sys
+from time import sleep
 
 class DelayedPrint:
-    def __init__(self, delay):
-        self.delay = delay
-
-    async def delay_print(self, message):
-        for c in message:
-            sys.stdout.write(c)
-            sys.stdout.flush()
-            await asyncio.sleep(self.delay)
+    #def __init__(self):
 
     def print(self, message):
-        asyncio.run(self.delay_print(message))
+        #TODO: match delay to fit message length
+        delay = .25
+
+        for i in range(len(message)):
+            sys.stdout.write(message[i])
+            sys.stdout.flush()
+            sleep(delay)
