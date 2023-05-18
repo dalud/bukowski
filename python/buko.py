@@ -16,23 +16,25 @@ played = []
 affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
-cls = 10
+cls = 4
 
 mouth.speak("Alright, I'm on.")
 
 while True:
-    print('\n'*cls)
-    flush()
-    #TODO: if subprocess speaking DO Not get new subject
-    cue = ear.listen(True)
-    subject = sb.parse(cue)
+    if not mouth.isSpeaking():
+        print('\n'*cls)
+        flush()
+        cue = ear.listen(True)
+        subject = sb.parse(cue)
+    else:
+        subject = None
     flush()
     if subject:
         for s in subject:
             if not  s == "huh":
                 flush()
                 reply = searcher.find(s, played)
-                if reply and not reply in played:
+                if reply and not reply in played and not mouth.isSpeaking():
                     mouth.speak(s+"?")
                     mouth.speak(affirm[(int)(random()*len(affirm))])
                     print('\n'*cls)
@@ -46,4 +48,4 @@ while True:
                 if subject.index(s) == len(subject)-1:
                     mouth.speak(s+"?")
                     mouth.speak(decline[(int)(random()*len(decline))])
-    else: mouth.speak(apologize[(int)(random()*len(apologize))])
+    #else: mouth.speak(apologize[(int)(random()*len(apologize))])

@@ -22,7 +22,7 @@ def enqueue_output(out, queue):
 
 # Build UI
 layout = [ui.Button("RUN", button_color="green on black"), ui.Button("STOP", button_color="red on black"), ui.Button("SHUTDOWN", button_color="grey on black")], [ui.Multiline(reroute_stdout=True, reroute_stderr=True, auto_refresh=True, autoscroll=True, expand_x=True, expand_y=True, no_scrollbar=True, background_color="black", text_color="green")]
-window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(13, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
+window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(16, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
 
 # Helpers
 def start(cmd):
@@ -41,7 +41,7 @@ while True:
         print("Starting...")
         start(['killall', 'python3'])
         if not process:
-            start(['python', '/Users/dalud/bukowski/python/delayedPrint.py'])
+            start(['python3', '/home/pi/bukowski/python/buko.py'])
 
     if event == "STOP":        
         start(['killall', 'python3'])
@@ -55,7 +55,8 @@ while True:
         if process:
             process.stdout.close()
             process.send_signal(signal.SIGTERM)
-        start(['sudo', 'shutdown', 'now'])
+        #start(['sudo', 'shutdown', 'now'])
+        window.close()
 
     if event == ui.WIN_CLOSED:
         start(['killall', 'python3'])
@@ -66,7 +67,8 @@ while True:
 
     try: line = q.get_nowait()
     except Empty:
-        continue
+        if not printer.isPrinting():
+            continue
     if ":msg:" in line:
         printer.print(line.split(":msg:")[1])
     else: print(line)
