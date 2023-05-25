@@ -26,7 +26,7 @@ window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="Dispo
 
 # Helpers
 def start(cmd):
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, close_fds=ON_POSIX)
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True, bufsize=1, close_fds=ON_POSIX) #stderr=subprocess.STDOUT, 
     t = Thread(target=enqueue_output, args=(process.stdout, q))
     t.daemon = True
     t.start()
@@ -69,7 +69,7 @@ while True:
     except Empty:
         if not printer.isPrinting():
             continue
-    if ":msg:" in line:
+    if ":msg:" in line and not printer.isPrinting():
         printer.print(line.split(":msg:")[1])
     else: print(line)
 

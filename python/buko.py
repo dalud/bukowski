@@ -31,7 +31,7 @@ while True:
     flush()
     if subject:
         for s in subject:
-            if not  s == "huh":
+            if not  s == "huh" and not mouth.isSpeaking():
                 flush()
                 reply = searcher.find(s, played)
                 if reply and not reply in played and not mouth.isSpeaking():
@@ -43,7 +43,8 @@ while True:
                     played.append(reply)
                     print(":msg:"+reply)
                     flush()
-                    if len(played) > 50: played.clear()
+                    if len(played) > 100: played.clear()
+                    s = None
                     break
                 if subject.index(s) == len(subject)-1:
                     mouth.speak(s+"?")
