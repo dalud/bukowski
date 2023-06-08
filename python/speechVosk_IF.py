@@ -24,25 +24,29 @@ class Ear:
             flush()
         self.q.put(bytes(indata))
 
-    def listen(self, listen):
+    def listen(self, listen, subject):
         self.listening = listen
+        print("Sub:", subject)
+        if subject == "huh": subject = None
+        flush()
         try:
             with sd.RawInputStream(dtype='int16', channels=1, callback=self.recordCallback):
                 print("I am listening...")
                 flush()
-                while self.listening:
+                while self.listening and not subject:
                     data = self.q.get()
                     if self.recognizer.AcceptWaveform(data):
                         self.recognizerResult = self.recognizer.Result()
                         self.resultDict = json.loads(self.recognizerResult)
                         if not self.resultDict.get("text", "") == "":
                             reply = self.resultDict.get("text", "")
-                            #print("I heard: ", reply)
+                            print("I heard: ", reply)
                             flush()
+                            listening = False
                             return reply
                             #print("I am listening...")
                         else:
-                            #print("no input sound")
+                            print("no input sound")
                             flush()
 
         except Exception as e:
