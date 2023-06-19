@@ -3,6 +3,8 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 import sys
 import json
+import time
+
 
 flush = sys.stdout.flush
 
@@ -25,8 +27,9 @@ class Ear:
         self.q.put(bytes(indata))
 
     def listen(self, listen, subject):
+        stamp = time.localtime()
         self.listening = listen
-        print("Sub:", subject)
+        #print("Sub:", subject)
         if subject == "huh": subject = None
         flush()
         try:
@@ -40,10 +43,10 @@ class Ear:
                         self.resultDict = json.loads(self.recognizerResult)
                         if not self.resultDict.get("text", "") == "":
                             reply = self.resultDict.get("text", "")
-                            print("I heard: ", reply)
+                            #print("I heard: ", reply)
                             flush()
                             listening = False
-                            return reply
+                            return (reply, time.strftime("%H:%M:%S", stamp))
                             #print("I am listening...")
                         else:
                             print("no input sound")
@@ -52,3 +55,4 @@ class Ear:
         except Exception as e:
             print(str(e))
             flush()
+        

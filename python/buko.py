@@ -4,7 +4,6 @@ from searchInFiles_IF import Searcher
 from speak_IF import Mouth
 from nltk_IF import SubjectParser
 from random import random
-import time
 
 
 flush = sys.stdout.flush
@@ -30,14 +29,12 @@ while True:
         print('\n'*cls)
         flush()
         cue = ear.listen(True, s)
-        stamp = time.localtime()
-        debug = (cue, time.strftime("%H:%M:%S", stamp))
-        if cue: subject = sb.parse(cue)
+        #print(cue)
+        if cue: subject = sb.parse(cue[0])
     else:
         subject = None
     flush()
     if subject:
-        #print(debug)
         for s in subject:
             if not  s == "huh" and not mouth.isSpeaking():
                 flush()
