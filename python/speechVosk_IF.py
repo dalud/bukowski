@@ -12,6 +12,7 @@ class Ear:
     def __init__(self):
         self.device_info = sd.query_devices(sd.default.device[0], 'input')
         self.samplerate = int(self.device_info['default_samplerate'])
+        #self.q = queue.Queue(1)
         self.q = queue.Queue()
         print("===> Building model and recognizer objects.  This may take a few minutes.")
         flush()
@@ -24,7 +25,9 @@ class Ear:
         if status:
             print(status, file=sys.stderr)
             flush()
-        self.q.put(bytes(indata))
+        #self.q.put(bytes(indata))
+        if self.q.empty:
+            self.q.put(bytes(indata))            
 
     def listen(self, listen, subject):
         stamp = time.localtime()
@@ -40,6 +43,7 @@ class Ear:
                     data = self.q.get()
                     if self.recognizer.AcceptWaveform(data):
                         self.recognizerResult = self.recognizer.Result()
+                        #print(self.recognizerResult)
                         self.resultDict = json.loads(self.recognizerResult)
                         if not self.resultDict.get("text", "") == "":
                             reply = self.resultDict.get("text", "")

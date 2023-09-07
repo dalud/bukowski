@@ -50,7 +50,7 @@ while True:
                     print(":msg:"+reply)
                     flush()
                     reply = None
-                    if len(played) > 100: played.clear()
+                    if len(played) > 150: played.clear()
                     break
                 if subject.index(s) == len(subject)-1:
                     mouth.speak(s+"?")
