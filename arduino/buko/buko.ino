@@ -312,6 +312,7 @@ void fillNielu() {
   command = "";
 }
 
+// Ongoing "h" from command center for x seconds
 int heiluKiekka=0;
 int heiluMax=5000;
 void heiluttelu() {
