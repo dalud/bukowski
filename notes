@@ -21,3 +21,15 @@ NLTK:
 pip install --user -U nltk
 python -m nltk.downloader popular
 pip install rake-nltk
+
+7inch HDMI Display-C:
+* Install:
+(sudo rm -rf LCD-show)
+git clone https://github.com/goodtft/LCD-show.git
+chmod -R 755 LCD-show
+cd LCD-show/
+sudo ./LCD7C-show
+
+* Rotate:
+(cd LCD-show/)
+sudo ./rotate.sh 90
