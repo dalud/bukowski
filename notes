@@ -33,3 +33,6 @@ sudo ./LCD7C-show
 * Rotate:
 (cd LCD-show/)
 sudo ./rotate.sh 90
+
+MIC-level:
+alsamixer
