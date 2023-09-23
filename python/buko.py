@@ -17,7 +17,7 @@ played = []
 affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
-cls = 7
+cls = 14
 s = None
 
 mouth.speak("Alright, I'm on.")
@@ -47,6 +47,7 @@ while True:
                     flush()
                     mouth.speakAsync(reply)
                     played.append(reply)
+                    #print(len(played))
                     print(":msg:"+reply)
                     flush()
                     reply = None

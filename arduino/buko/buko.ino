@@ -14,8 +14,10 @@ int speedo_elbow = 20000;
 
 int sip = 2; // Galley pump (1.)
 int tap = 3; // Pilge pump (2.)
-int tukos = 4; // Mellu
-int nielu = 5; // Sirai
+int tukos = 4; // 24V valve
+int nielu = 5; // 12V valve
+
+int kusi = 7; // Mahan kääntäjä
 
 String command;
 
@@ -38,6 +40,8 @@ void setup() {
   digitalWrite(tukos, HIGH);
   pinMode(nielu, OUTPUT);
   digitalWrite(nielu, HIGH);
+  pinMode(kusi, OUTPUT);
+  digitalWrite(kusi, HIGH);
 
   // Built in LED
   pinMode(LED_BUILTIN, OUTPUT);
@@ -150,34 +154,40 @@ void loop() {
   if(command == "n") { // Nielu
     fillNielu();
   }
+  if(command == "h") { // Heiluttelu
+    heiluttelu();
+  }
+
+  if(command == "k") { // Kuse
+    kuse();
+  }
 
   // Set arm poses
   if(command == "1") { // Perus tuoppi lepo
     pose(1);
   }
-  if(command == "2") {
+  if(command == "2") { // Juoma asento
     pose(2);
   }
-  if(command == "3") {
-    //pose(3);
+  if(command == "3") { // Juoma 2
+    pose(3);
   } 
-  if(command == "4") {
-    // pose(4);
+  if(command == "4") { // Skol!
+    pose(4);
   }
   if(command == "5") {
-    //pose(5);
+    pose(5);
   }
   if(command == "6") {
-    //pose(6);
+    pose(6);
   }
   if(command == "7") {
-    //pose(7);
+    pose(7);
   }
   if(command == "8") { // Fill
     pose(8);
   }
-  // TODO: default to 1
-  // else pose(1);
+  // TODO: default to 1 (in Rasp?)
 }
 
 void zeroMotors() {
@@ -205,54 +215,64 @@ void pose(int pose) {
       wrist.run();
       break;
     case 2: // Sip
-      shoulder.moveTo(-2000);
+      shoulder.moveTo(0);
       shoulder.run();
-      spreader.moveTo(-2000);
+      spreader.moveTo(1000);
       spreader.run();
-      elbow.moveTo(4000);
+      elbow.moveTo(5000);
       elbow.run();
-      wrist.moveTo(1000);
+      wrist.moveTo(-500);
       wrist.run();
       break;
-    case 3:
+    case 3: // Sip 2
+      shoulder.moveTo(1000);
+      shoulder.run();
+      spreader.moveTo(500);
+      spreader.run();
+      elbow.moveTo(5000);
+      elbow.run();
+      wrist.moveTo(0);
+      wrist.run();
+      break;
+    case 4: // Skol!
+      shoulder.moveTo(-2500);
+      shoulder.run();
+      spreader.moveTo(500);
+      spreader.run();
+      elbow.moveTo(3000);
+      elbow.run();
+      wrist.moveTo(-400);
+      wrist.run();
+      break;
+    case 5:
       shoulder.moveTo(0);
       shoulder.run();
       spreader.moveTo(0);
       spreader.run();
-      elbow.moveTo(e);
-      elbow.run();
-      break;
-    case 4:
-      shoulder.moveTo(sh);
-      shoulder.run();
-      spreader.moveTo(sp);
-      spreader.run();
       elbow.moveTo(0);
       elbow.run();
-      break;
-    case 5:
-      shoulder.moveTo(sh);
-      shoulder.run();
-      spreader.moveTo(0);
-      spreader.run();
-      elbow.moveTo(e);
-      elbow.run();
+      wrist.moveTo(0);
+      wrist.run();
       break;
     case 6:
       shoulder.moveTo(0);
       shoulder.run();
-      spreader.moveTo(sp);
+      spreader.moveTo(0);
       spreader.run();
-      elbow.moveTo(e);
+      elbow.moveTo(0);
       elbow.run();
+      wrist.moveTo(0);
+      wrist.run();
       break;
     case 7:
-      shoulder.moveTo(sh);
+      shoulder.moveTo(0);
       shoulder.run();
-      spreader.moveTo(sp);
+      spreader.moveTo(0);
       spreader.run();
-      elbow.moveTo(e);
+      elbow.moveTo(0);
       elbow.run();
+      wrist.moveTo(0);
+      wrist.run();
       break;
     case 8: // Fill 'er up
       shoulder.moveTo(-1500);
@@ -285,9 +305,27 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(20000);
+  delay(5000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
   command = "";
+}
+
+// Ongoing "h" from command center for x seconds
+int heiluKiekka=0;
+int heiluMax=5000;
+void heiluttelu() {
+  heiluKiekka++;
+  if(heiluKiekka<heiluMax) wrist.moveTo(500);
+  if(heiluKiekka>heiluMax) wrist.moveTo(-500);
+  if(heiluKiekka>heiluMax*2) heiluKiekka=0;
+  wrist.run();
+}
+
+void kuse() {
+  digitalWrite(kusi, LOW);
+  delay(5000);
+  digitalWrite(kusi, HIGH);
+  delay(100);
 }
