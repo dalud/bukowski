@@ -17,7 +17,7 @@ played = []
 affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
-cls = 4
+cls = 7
 s = None
 
 mouth.speak("Alright, I'm on.")
