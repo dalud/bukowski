@@ -16,8 +16,9 @@ int sip = 2; // Galley pump (1.)
 int tap = 3; // Pilge pump (2.)
 int tukos = 4; // 24V valve
 int nielu = 5; // 12V valve
-
+int suu = 6; 
 int kusi = 7; // Mahan kääntäjä
+int silmat = 18;
 
 String command;
 
@@ -42,6 +43,10 @@ void setup() {
   digitalWrite(nielu, HIGH);
   pinMode(kusi, OUTPUT);
   digitalWrite(kusi, HIGH);
+  pinMode(suu, OUTPUT);
+  digitalWrite(suu, HIGH);
+  pinMode(silmat, OUTPUT);
+  digitalWrite(silmat, HIGH);
 
   // Built in LED
   pinMode(LED_BUILTIN, OUTPUT);
@@ -55,7 +60,7 @@ void setup() {
     maxi = 1000;
   } else maxi = 10000;
 
-  // Run in debug mode
+  // Run in manual debug mode
   debug = true;
   //debug = false;
 
@@ -162,6 +167,14 @@ void loop() {
     kuse();
   }
 
+  if(command == "p") { // Liikuta suuta ja silmiä
+    puhu();
+  }
+
+  if(command == "s") { // Suu
+    liikutaSuuta();
+  }
+
   // Set arm poses
   if(command == "1") { // Perus tuoppi lepo
     pose(1);
@@ -199,6 +212,9 @@ void zeroMotors() {
   elbow.run();
   wrist.moveTo(0);
   wrist.run();
+  digitalWrite(suu, HIGH);
+  digitalWrite(silmat, HIGH);
+  // TODO: add all others
 }
 
 void pose(int pose) {
@@ -325,7 +341,22 @@ void heiluttelu() {
 
 void kuse() {
   digitalWrite(kusi, LOW);
-  delay(5000);
+  delay(6000);
   digitalWrite(kusi, HIGH);
   delay(100);
+  command = "";
+}
+
+void liikutaSuuta() {
+  digitalWrite(suu, LOW);
+}
+
+void puhu() { // Liikuta silmiä ja suuta
+  digitalWrite(silmat, LOW);
+  delay(200);
+  digitalWrite(silmat, HIGH);
+  digitalWrite(suu, LOW);
+  delay(3000);
+  digitalWrite(suu, HIGH);
+  delay(1000);
 }
