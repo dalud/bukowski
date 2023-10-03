@@ -1,6 +1,7 @@
 python:
 sudo apt-get install idle3
 python3 -m pip install sounddevice
+pip install pasimple
 
 MIC CHECK:
 arecord -d 5 -r 44100 test.wav
@@ -36,3 +37,4 @@ sudo ./rotate.sh 90
 
 MIC-level:
 alsamixer
+

@@ -4,7 +4,8 @@ from searchInFiles_IF import Searcher
 from speak_IF import Mouth
 from nltk_IF import SubjectParser
 from random import random
-
+import pyaudio
+import audioop
 
 flush = sys.stdout.flush
 
@@ -19,12 +20,17 @@ decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
 cls = 14
 s = None
+audio = pyaudio.PyAudio()
+print(audio.get_default_output_device_info())
+stream = audio.open(format=2, channels=2, rate=44100, input=True)
 
 mouth.speak("Alright, I'm on.")
 
 while True:
     if mouth.isSpeaking():
         s = subject = cue = None
+        print("|"*audioop.rms(stream.read(1), 1))        
+        
     if not mouth.isSpeaking():
         print('\n'*cls)
         flush()
