@@ -22,11 +22,7 @@ int silmat = 18;
 
 String command;
 
-bool logita;
-bool debug;
 char poses[] = { '1', '2', '3', '4', '5', '6', '7' };
-int kiekka = 0;
-int maxi;
 
 
 void setup() {
@@ -52,18 +48,6 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   
-  // activate debug logging
-  logita = false;
-  // kiekka < maxi = loop speed
-  // with log, set kiekka lower
-  if(logita) {
-    maxi = 1000;
-  } else maxi = 10000;
-
-  // Run in manual debug mode
-  debug = true;
-  //debug = false;
-
   //Stepper parameters
   shoulder.setMaxSpeed(5000); //SPEED = Steps / second  
   shoulder.setAcceleration(accel); //ACCELERATION = Steps /(second)^2    
@@ -82,39 +66,17 @@ void setup() {
   wrist.setSpeed(speedo);
   
   delay(500);
-
-  //---------------------------------------------------------------------------
 }
+
+
 void loop() {
-  // Default to tuoppi ylhäällä
-  //kiekka++;  
-  // Debug mode using serial commands
-  if(debug) {
-    if (Serial.available()) {
-      command = Serial.readStringUntil('\n');
-    }
+  // TODO: Default to tuoppi ylhäällä? pose1
+  
+  // Read command from Serial Bus
+  if (Serial.available()) {
+    command = Serial.readStringUntil('\n');
   }
   
-  // Auto mode
-  if(!debug) {
-    if(digitalRead(2)) {
-      digitalWrite(LED_BUILTIN, HIGH);
-  
-      if(kiekka>maxi) {    
-        command = poses[random(sizeof(poses))];
-        kiekka = 0;
-      }
-    } else {
-      digitalWrite(LED_BUILTIN, LOW);
-      command = "z";
-    }
-  }
-
-  if(logita) {
-    //Serial.print(digitalRead(2));
-    //Serial.println(": " +command);
-  }
-
   // Reset
   if(command == "z" || command == "0") {
     zeroMotors();
@@ -122,8 +84,7 @@ void loop() {
   
   // Manual arm positioning 
   if(command.startsWith("sh")) { // Hail
-  // Shoulder dir is negative
-    if(logita) Serial.println(shoulder.currentPosition());
+    // Shoulder dir is negative
     // Custom position
     if(command.length() > 2) shoulder.moveTo(command.substring(2).toInt());
     // Default max
@@ -131,19 +92,16 @@ void loop() {
     shoulder.run();
   }
   if(command.startsWith("sp")) { // Spreader
-    if(logita) Serial.println(spreader.currentPosition());
     if(command.length() > 2) spreader.moveTo(command.substring(2).toInt());
     else spreader.moveTo(sp);
     spreader.run();    
   }
   if(command.startsWith("e")) { // Elbow
-    if(logita) Serial.println(elbow.currentPosition());
     if(command.length() > 1) elbow.moveTo(command.substring(1).toInt());
     else elbow.moveTo(e);
     elbow.run();
   }
   if(command.startsWith("w")) { // Wrist
-    if(logita) Serial.println(wrist.currentPosition());
     if(command.length() > 1) wrist.moveTo(command.substring(1).toInt());
     else wrist.moveTo(w);
     wrist.run();
@@ -167,12 +125,8 @@ void loop() {
     kuse();
   }
 
-  if(command == "p") { // Liikuta suuta ja silmiä
-    puhu();
-  }
-
-  if(command == "s") { // Suu
-    liikutaSuuta();
+  if(command.startsWith("p")) { // Puhu/suu
+    if(command.length() > 1) liikutaSuuta(command.substring(1).toInt());
   }
 
   // Set arm poses
@@ -347,8 +301,14 @@ void kuse() {
   command = "";
 }
 
-void liikutaSuuta() {
-  digitalWrite(suu, LOW);
+void liikutaSuuta(int amp) {
+  if(amp) {
+    digitalWrite(suu, LOW);
+    digitalWrite(LED_BUILTIN, HIGH);
+  } else {
+    digitalWrite(suu, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
 }
 
 void puhu() { // Liikuta silmiä ja suuta

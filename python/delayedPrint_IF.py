@@ -7,7 +7,7 @@ class DelayedPrint:
 
     def print(self, message):
         #print(len(message))
-        delay = .08752
+        delay = .08751
         #print(delay)
         self.printing = True
 
