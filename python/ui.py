@@ -22,7 +22,7 @@ def enqueue_output(out, queue):
 
 # Build UI
 layout = [ui.Button("RUN", button_color="green on black"), ui.Button("STOP", button_color="red on black"), ui.Button("EXIT", button_color="grey on black")], [ui.Multiline(reroute_stdout=True, reroute_stderr=True, auto_refresh=True, autoscroll=True, expand_x=True, expand_y=True, no_scrollbar=True, background_color="black", text_color="green")]
-window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 36 bold", default_button_element_size=(7, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
+window = ui.Window("Robohemian: Bukowski", layout, size=(1024, 600), font="DisposableDroidBB 48 bold", default_button_element_size=(5, 2), button_color="black", auto_size_buttons=False, resizable=True, background_color="black")
 
 # Helpers
 def start(cmd):

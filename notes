@@ -37,4 +37,3 @@ sudo ./rotate.sh 90
 
 MIC-level:
 alsamixer
-
