@@ -24,9 +24,15 @@ String command;
 
 char poses[] = { '1', '2', '3', '4', '5', '6', '7' };
 
+int counter; // Universal counter
+int alea; // Silmä arpa
+
 
 void setup() {
   Serial.begin(9600);
+
+  counter = 0;
+  alea = 0;
 
   // Drink logic
   pinMode(sip, OUTPUT);
@@ -70,8 +76,22 @@ void setup() {
 
 
 void loop() {
+  counter++;
+  //Serial.write(counter);
   // TODO: Default to tuoppi ylhäällä? pose1
-  
+
+  // Silmä arpa
+  if (!alea) alea = random(3);
+  if(counter > 7500) {
+    liikutaSilmia(alea);
+    //liikutaSilmia(1);
+    if(counter > 10000) {
+      liikutaSilmia(0);
+      counter = 0;
+      alea = 0;
+    }
+  }
+
   // Read command from Serial Bus
   if (Serial.available()) {
     command = Serial.readStringUntil('\n');
@@ -127,6 +147,10 @@ void loop() {
 
   if(command.startsWith("p")) { // Puhu/suu
     if(command.length() > 1) liikutaSuuta(command.substring(1).toInt());
+  }
+
+  if(command == "s") {
+    digitalWrite(silmat, LOW);
   }
 
   // Set arm poses
@@ -311,12 +335,14 @@ void liikutaSuuta(int amp) {
   }
 }
 
-void puhu() { // Liikuta silmiä ja suuta
-  digitalWrite(silmat, LOW);
-  delay(200);
-  digitalWrite(silmat, HIGH);
-  digitalWrite(suu, LOW);
-  delay(3000);
-  digitalWrite(suu, HIGH);
-  delay(1000);
+void liikutaSilmia(long alea) {
+  //Serial.write(alea);
+  switch(alea) {
+    case 1:
+      digitalWrite(silmat, LOW);
+      break;
+    default:
+      digitalWrite(silmat, HIGH);
+      break;
+  }
 }
