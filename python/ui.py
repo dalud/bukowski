@@ -51,7 +51,7 @@ while True:
             process.send_signal(signal.SIGTERM)     
 
     if event == "EXIT":
-        print("Suhtting down...")
+        print("Shutting down...")
         if process:
             process.stdout.close()
             process.send_signal(signal.SIGTERM)

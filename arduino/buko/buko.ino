@@ -283,8 +283,10 @@ void pose(int pose) {
 
 void drink() {
     digitalWrite(sip, LOW);
+    digitalWrite(suu, LOW);
     delay(5000);
     digitalWrite(sip, HIGH);
+    digitalWrite(suu, HIGH);
     command = "";
 }
 
