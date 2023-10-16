@@ -4,6 +4,7 @@ from vosk import Model, KaldiRecognizer
 import sys
 import json
 import time
+import subprocess
 
 
 flush = sys.stdout.flush
@@ -12,13 +13,15 @@ class Ear:
     def __init__(self):
         self.device_info = sd.query_devices(sd.default.device[0], 'input')
         self.samplerate = int(self.device_info['default_samplerate'])
-        #self.q = queue.Queue(1)
         self.q = queue.Queue()
         print("===> Building model and recognizer objects.  This may take a few minutes.")
         flush()
         self.model = Model(r"/home/pi/voskModel/vosk-model-small-en-us-0.15")
         self.recognizer = KaldiRecognizer(self.model, self.samplerate)
         self.recognizer.SetWords(False)
+        print(subprocess.Popen(["amixer", "set", "Capture", "100%"], stdout=subprocess.PIPE).communicate())
+        #print(subprocess.Popen(["amixer", "set", "Capture", "cap"], stdout=subprocess.PIPE).communicate())
+        flush()
         self.listening = False
 
     def recordCallback(self, indata, frames, time, status):
@@ -53,7 +56,7 @@ class Ear:
                             return (reply, time.strftime("%H:%M:%S", stamp))
                             #print("I am listening...")
                         else:
-                            print("no input sound")
+                            #print("no input sound")
                             flush()
 
         except Exception as e:
