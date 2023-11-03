@@ -18,6 +18,7 @@ unsigned char high_data[12] = {0};
 String direction = "empty";
 //String direction = "full";
 int limit = 3;
+int pinout = 4; // Output pin for alarm
 
 void getHigh12SectionValue() {
   memset(high_data, 0, sizeof(high_data));
@@ -93,15 +94,19 @@ void check() {
 void alert(int ON) {
   if(ON) {
     digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(pinout, HIGH);
     SERIAL.println("ALARM!");
   } else {
     digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(pinout, LOW);
   }
 }
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+  pinMode(pinout, OUTPUT);
+  digitalWrite(pinout, LOW);
   
   SERIAL.begin(9600);
   Wire.begin();
