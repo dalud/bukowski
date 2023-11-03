@@ -25,5 +25,5 @@ class Arduino:
         #sleep(.01)
 
     def read(self):
-        return self.arduino.readline()
-        #sleep(1)
+        try: return self.arduino.readline().decode('utf-8').rstrip()
+        except: return 
