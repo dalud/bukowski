@@ -5,6 +5,7 @@ import sys
 import json
 import time
 import subprocess
+import time
 
 
 flush = sys.stdout.flush
@@ -20,7 +21,7 @@ class Ear:
         self.recognizer = KaldiRecognizer(self.model, self.samplerate)
         self.recognizer.SetWords(False)
         print(subprocess.Popen(["amixer", "set", "Capture", "100%"], stdout=subprocess.PIPE).communicate())
-        #print(subprocess.Popen(["amixer", "set", "Capture", "cap"], stdout=subprocess.PIPE).communicate())
+
         flush()
         self.listening = False
 
@@ -28,7 +29,6 @@ class Ear:
         if status:
             print(status, file=sys.stderr)
             flush()
-        #self.q.put(bytes(indata))
         if self.q.empty:
             self.q.put(bytes(indata))            
 
@@ -42,7 +42,9 @@ class Ear:
             with sd.RawInputStream(dtype='int16', channels=1, callback=self.recordCallback):
                 print("I am listening...")
                 flush()
-                while self.listening and not subject:
+                timeout = time.time()+3 #Seconds to tip your ear                
+
+                while self.listening and time.time() < timeout:
                     data = self.q.get()
                     if self.recognizer.AcceptWaveform(data):
                         self.recognizerResult = self.recognizer.Result()

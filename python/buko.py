@@ -34,7 +34,7 @@ affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
 cls = 14
-s = None
+s = subject = cue = None
 output = Output()
 arduino = Arduino()
 arduino.connect()
@@ -45,54 +45,63 @@ arduino.write("1")
 
 
 while True:
-    try:
-        if mouth.isSpeaking():
-            s = subject = cue = None
-            arduino.write('p'+str(output.read()))
-            
-        if not mouth.isSpeaking():
-            print('\n'*cls)
+    received = arduino.read()
+    if received:
+        print("Nyt tuli hommia:", received)
+        flush()
+        if received == "t":
+                print("täyttää vissiin pitäis...")
+    else:
+        try:
+            if mouth.isSpeaking():
+                s = subject = cue = None
+                arduino.write('p'+str(output.read()))
+                received = arduino.read()
+                
+            if not mouth.isSpeaking():
+                print('\n'*cls)
+                flush()
+                cue = ear.listen(True, s)
+                if cue: subject = sb.parse(cue[0])
+            else:
+                subject = None
             flush()
-            cue = ear.listen(True, s)
-            if cue: subject = sb.parse(cue[0])
-        else:
-            subject = None
-        flush()
-        if subject:
-            for s in subject:
-                if not  s == "huh" and not mouth.isSpeaking():
-                    flush()
-                    reply = searcher.find(s, played)
-                    if reply and not reply in played and not mouth.isSpeaking():
-                        arduino.write('p1')
-                        mouth.speak(s+"?")
-                        arduino.write('p0')
-                        sleep(.5)
-                        s = subject = cue = None
-                        arduino.write('p1')
-                        mouth.speak(affirm[(int)(random()*len(affirm))])
-                        arduino.write('p0')
-                        sleep(.5)
-                        print('\n'*cls)
+            if subject:
+                for s in subject:
+                    if not  s == "huh" and not mouth.isSpeaking():
                         flush()
-                        mouth.speakAsync(reply)
-                        played.append(reply)
-                        print(":msg:"+reply)
-                        flush()
-                        reply = None
-                        if len(played) > 150: played.clear()
-                        break
-                    if subject.index(s) == len(subject)-1:
-                        arduino.write('p1')
-                        mouth.speak(s+"?")
-                        arduino.write('p0')
-                        sleep(.5)
-                        s = subject = cue = None
-                        arduino.write('p1')
-                        mouth.speak(decline[(int)(random()*len(decline))])
-                        arduino.write('p0')
-                        sleep(.5)
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt")
-        flush()
-        exit()
+                        reply = searcher.find(s, played)
+                        if reply and not reply in played and not mouth.isSpeaking():
+                            arduino.write('p1')
+                            mouth.speak(s+"?")
+                            arduino.write('p0')
+                            sleep(.5)
+                            s = subject = cue = None
+                            arduino.write('p1')
+                            mouth.speak(affirm[(int)(random()*len(affirm))])
+                            arduino.write('p0')
+                            sleep(.5)
+                            print('\n'*cls)
+                            flush()
+                            mouth.speakAsync(reply)
+                            played.append(reply)
+                            print(":msg:"+reply)
+                            flush()
+                            reply = None
+                            if len(played) > 150: played.clear()
+                            break
+                        if subject.index(s) == len(subject)-1:
+                            arduino.write('p1')
+                            mouth.speak(s+"?")
+                            arduino.write('p0')
+                            sleep(.5)
+                            s = subject = cue = None
+                            arduino.write('p1')
+                            mouth.speak(decline[(int)(random()*len(decline))])
+                            arduino.write('p0')
+                            sleep(.5)
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt")
+            flush()
+            exit()
+
