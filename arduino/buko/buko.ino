@@ -19,6 +19,12 @@ int nielu = 5; // 12V valve
 int suu = 6; 
 int kusi = 7; // Mahan kääntäjä
 int silmat = 18;
+int eks = 31; // Elbow kill switch (positive), alarm = 5500
+int eks2 = 32; // Alarm = -400
+int spks = 34; // Spreader kill switch (positive), alarm = 2700
+int spks2 = 33; // Alarm = -200
+int shks = 35; // Shoulder kill switch (negative), alarm = -2700
+
 
 String command;
 
@@ -34,7 +40,7 @@ void setup() {
   counter = 0;
   alea = 0;
 
-  // Drink logic
+  // Outputs
   pinMode(sip, OUTPUT);
   digitalWrite(sip, HIGH);
   pinMode(tap, OUTPUT);
@@ -49,7 +55,14 @@ void setup() {
   digitalWrite(suu, HIGH);
   pinMode(silmat, OUTPUT);
   digitalWrite(silmat, HIGH);
-
+  
+  // Inputs
+  pinMode(eks, INPUT);
+  pinMode(eks2, INPUT);
+  pinMode(spks, INPUT);
+  pinMode(spks2, INPUT);
+  pinMode(shks, INPUT);
+  
   // Built in LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
@@ -78,10 +91,16 @@ void setup() {
 void loop() {
   counter++;
   //Serial.write(counter);
-  // TODO: Default to tuoppi ylhäällä? pose1
 
+  // Kill switch checks
+  if(digitalRead(eks)) fixElbow(1);
+  if(digitalRead(eks2)) fixElbow(0);
+  if(digitalRead(spks)) fixSpreader(1);
+  if(digitalRead(spks2)) fixSpreader(0);
+  if(digitalRead(shks)) fixShoulder(0);
+  
   // Silmä arpa
-  if (!alea) alea = random(3);
+  if(!alea) alea = random(3);
   if(counter > 7500) {
     liikutaSilmia(alea);
     //liikutaSilmia(1);
@@ -338,7 +357,6 @@ void liikutaSuuta(int amp) {
 }
 
 void liikutaSilmia(long alea) {
-  //Serial.write(alea);
   switch(alea) {
     case 1:
       digitalWrite(silmat, LOW);
@@ -346,5 +364,59 @@ void liikutaSilmia(long alea) {
     default:
       digitalWrite(silmat, HIGH);
       break;
+  }
+}
+
+void fixElbow(int direction) {
+  if(direction) { // Positive
+    command = "";
+    elbow.stop();
+    elbow.setCurrentPosition(5000);
+    elbow.moveTo(0);
+
+    while(digitalRead(eks)) elbow.run();
+  } else { // Negative
+    command = "";
+    elbow.stop();
+    elbow.setCurrentPosition(-400);
+    elbow.moveTo(0);
+
+    while(digitalRead(eks2)) elbow.run();
+  }
+}
+
+void fixSpreader(int direction) {
+  if(direction) {
+    command = "";
+    spreader.stop();
+    spreader.setCurrentPosition(2700);
+    spreader.moveTo(0);
+
+    while(digitalRead(spks)) spreader.run();
+  } else {
+    command = "";
+    spreader.stop();
+    spreader.setCurrentPosition(-200);
+    spreader.moveTo(0);
+
+    while(digitalRead(spks2)) spreader.run();
+  }
+}
+
+void fixShoulder(int direction) {
+  if(direction) {
+    command = "";
+    shoulder.stop();
+    shoulder.setCurrentPosition(1000);
+    shoulder.moveTo(0);
+
+    //while(digitalRead(shks2)) shoulder.run();
+  } else {
+    command = "";
+    shoulder.stop();
+    shoulder.setCurrentPosition(-2600);
+    shoulder.moveTo(0);
+
+    while(digitalRead(shks)) shoulder.run();
   }
 }
