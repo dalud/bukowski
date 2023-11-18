@@ -51,6 +51,7 @@ while True:
         flush()
         if received == "t":
                 print("täyttää vissiin pitäis...")
+                flush()
     else:
         try:
             if mouth.isSpeaking():
@@ -85,10 +86,12 @@ while True:
                             flush()
                             mouth.speakAsync(reply)
                             played.append(reply)
+                            #print('Played size:', len(played));
+                            #flush()
                             print(":msg:"+reply)
                             flush()
                             reply = None
-                            if len(played) > 150: played.clear()
+                            if len(played) > 200: played.clear()
                             break
                         if subject.index(s) == len(subject)-1:
                             arduino.write('p1')
