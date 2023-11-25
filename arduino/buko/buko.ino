@@ -179,11 +179,15 @@ void loop() {
     kuse();
   }
 
+  if(command == "t") { // Täytä lasi -sarja
+    fillerUp();
+  }
+
   if(command.startsWith("p")) { // Puhu/suu
     if(command.length() > 1) liikutaSuuta(command.substring(1).toInt());
   }
 
-  if(command == "s") {
+  if(command == "s") { // Silmät käyntiin ON
     digitalWrite(silmat, LOW);
   }
 
