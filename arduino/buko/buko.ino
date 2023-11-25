@@ -1,17 +1,21 @@
 #include <AccelStepper.h>
+#include <SharpIR.h>
 
+
+// Käden moottorit
 AccelStepper shoulder(1, 10, 11);
-int sh = -3000;
+int sh = -2600;
 AccelStepper spreader(1, 8, 9);
-int sp = 2000;
+int sp = 2700;
 AccelStepper elbow(1, 12, 13);
-int e = 3000;
+int e = 5000;
 AccelStepper wrist(1, 22, 23);
 int w = 3000;
 int speedo = 2000;
 int accel = 1500;
 int speedo_elbow = 20000;
 
+// Pumput, venttiilit etc.
 int sip = 2; // Galley pump (1.)
 int tap = 3; // Pilge pump (2.)
 int tukos = 4; // 24V valve
@@ -24,7 +28,10 @@ int eks2 = 32; // Alarm = -400
 int spks = 34; // Spreader kill switch (positive), alarm = 2700
 int spks2 = 33; // Alarm = -200
 int shks = 35; // Shoulder kill switch (negative), alarm = -2700
+int shks2 = 36; // Alarm = 1000
+int lasi = 45; // Veden taso lasissa -hälytys
 
+SharpIR hanasilma( SharpIR::GP2Y0A41SK0F, A0 );
 
 String command;
 
@@ -62,6 +69,8 @@ void setup() {
   pinMode(spks, INPUT);
   pinMode(spks2, INPUT);
   pinMode(shks, INPUT);
+  pinMode(shks2, INPUT);
+  pinMode(lasi, INPUT);
   
   // Built in LED
   pinMode(LED_BUILTIN, OUTPUT);
@@ -98,12 +107,18 @@ void loop() {
   if(digitalRead(spks)) fixSpreader(1);
   if(digitalRead(spks2)) fixSpreader(0);
   if(digitalRead(shks)) fixShoulder(0);
+  if(digitalRead(shks2)) fixShoulder(1);
+
+  // Lasin tilanne
+  // Serial.println(digitalRead(lasi));
+  if(digitalRead(lasi)) fillerUp();
   
   // Silmä arpa
   if(!alea) alea = random(3);
+  
   if(counter > 7500) {
     liikutaSilmia(alea);
-    //liikutaSilmia(1);
+    
     if(counter > 10000) {
       liikutaSilmia(0);
       counter = 0;
@@ -288,13 +303,13 @@ void pose(int pose) {
       wrist.run();
       break;
     case 8: // Fill 'er up
-      shoulder.moveTo(-1500);
+      shoulder.moveTo(-2500);
       shoulder.run();
-      spreader.moveTo(2500);
+      spreader.moveTo(500);
       spreader.run();
-      elbow.moveTo(500);
+      elbow.moveTo(1000);
       elbow.run();
-      wrist.moveTo(-700);
+      wrist.moveTo(-250);
       wrist.run();
       break;
   }
@@ -327,17 +342,6 @@ void fillNielu() {
   command = "";
 }
 
-// Ongoing "h" from command center for x seconds
-int heiluKiekka=0;
-int heiluMax=5000;
-void heiluttelu() {
-  heiluKiekka++;
-  if(heiluKiekka<heiluMax) wrist.moveTo(500);
-  if(heiluKiekka>heiluMax) wrist.moveTo(-500);
-  if(heiluKiekka>heiluMax*2) heiluKiekka=0;
-  wrist.run();
-}
-
 void kuse() {
   digitalWrite(kusi, LOW);
   delay(6000);
@@ -356,6 +360,17 @@ void liikutaSuuta(int amp) {
   }
 }
 
+// Ongoing "h" from command center for x seconds
+int heiluKiekka=0;
+int heiluMax=5000;
+void heiluttelu() {
+  heiluKiekka++;
+  if(heiluKiekka<heiluMax) wrist.moveTo(500);
+  if(heiluKiekka>heiluMax) wrist.moveTo(-500);
+  if(heiluKiekka>heiluMax*2) heiluKiekka=0;
+  wrist.run();
+}
+
 void liikutaSilmia(long alea) {
   switch(alea) {
     case 1:
@@ -367,21 +382,19 @@ void liikutaSilmia(long alea) {
   }
 }
 
-void fixElbow(int direction) {
-  if(direction) { // Positive
+void fixShoulder(int direction) {
+  if(direction) {
     command = "";
-    elbow.stop();
-    elbow.setCurrentPosition(5000);
-    elbow.moveTo(0);
-
-    while(digitalRead(eks)) elbow.run();
-  } else { // Negative
+    shoulder.stop();
+    shoulder.setCurrentPosition(1000);
+    shoulder.moveTo(0);
+    while(digitalRead(shks2)) shoulder.run();
+  } else {
     command = "";
-    elbow.stop();
-    elbow.setCurrentPosition(-400);
-    elbow.moveTo(0);
-
-    while(digitalRead(eks2)) elbow.run();
+    shoulder.stop();
+    shoulder.setCurrentPosition(-2600);
+    shoulder.moveTo(0);
+    while(digitalRead(shks)) shoulder.run();
   }
 }
 
@@ -403,20 +416,31 @@ void fixSpreader(int direction) {
   }
 }
 
-void fixShoulder(int direction) {
-  if(direction) {
+void fixElbow(int direction) {
+  if(direction) { // Positive
     command = "";
-    shoulder.stop();
-    shoulder.setCurrentPosition(1000);
-    shoulder.moveTo(0);
+    elbow.stop();
+    elbow.setCurrentPosition(5000);
+    elbow.moveTo(0);
 
-    //while(digitalRead(shks2)) shoulder.run();
-  } else {
+    while(digitalRead(eks)) elbow.run();
+  } else { // Negative
     command = "";
-    shoulder.stop();
-    shoulder.setCurrentPosition(-2600);
-    shoulder.moveTo(0);
+    elbow.stop();
+    elbow.setCurrentPosition(-400);
+    elbow.moveTo(0);
 
-    while(digitalRead(shks)) shoulder.run();
+    while(digitalRead(eks2)) elbow.run();
+  }
+}
+
+void fillerUp() {
+  Serial.println("Nytkö?");
+  delay(500);
+  if(digitalRead(lasi)) {
+    Serial.println("Nyt!");
+    Serial.println("t");
+    while(hanasilma.getDistance() > 3) pose(8);
+    Serial.println("Nyt ois lasi paikoillaan...");
   }
 }

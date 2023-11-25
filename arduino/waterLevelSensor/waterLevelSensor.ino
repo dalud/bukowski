@@ -17,7 +17,7 @@ unsigned char high_data[12] = {0};
 
 String direction = "empty";
 //String direction = "full";
-int limit = 3;
+int limit = 1;
 int pinout = 4; // Output pin for alarm
 
 void getHigh12SectionValue() {
@@ -83,23 +83,21 @@ void check() {
     SERIAL.print("water level = ");
     SERIAL.println(parsed);
 
-    if(direction=="empty" && parsed<=limit) alert(1);
-    if(direction=="full" && parsed>=limit) alert(1);
-    else alert(0);
+    if(direction=="empty" && parsed<=limit) alert();
+    else if(direction=="full" && parsed>=limit) alert();
+    else {
+      digitalWrite(LED_BUILTIN, LOW);
+      digitalWrite(pinout, LOW);
+    }
     
-    delay(1000);
+    delay(300);
   }
 }
 
-void alert(int ON) {
-  if(ON) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    digitalWrite(pinout, HIGH);
-    SERIAL.println("ALARM!");
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
-    digitalWrite(pinout, LOW);
-  }
+void alert() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(pinout, HIGH);
+  SERIAL.println("ALARM!");
 }
 
 void setup() {
