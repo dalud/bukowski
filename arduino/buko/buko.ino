@@ -20,8 +20,9 @@ int sip = 2; // Galley pump (1.)
 int tap = 3; // Pilge pump (2.)
 int tukos = 4; // 24V valve
 int nielu = 5; // 12V valve
-int suu = 6; 
+int suu = 6;
 int kusi = 7; // Mahan kääntäjä
+int tuoli = 14;
 int silmat = 18;
 int eks = 31; // Elbow kill switch (positive), alarm = 5500
 int eks2 = 32; // Alarm = -400
@@ -58,6 +59,8 @@ void setup() {
   digitalWrite(nielu, HIGH);
   pinMode(kusi, OUTPUT);
   digitalWrite(kusi, HIGH);
+  pinMode(tuoli, OUTPUT);
+  digitalWrite(tuoli, HIGH);
   pinMode(suu, OUTPUT);
   digitalWrite(suu, HIGH);
   pinMode(silmat, OUTPUT);
@@ -109,9 +112,9 @@ void loop() {
   if(digitalRead(shks)) fixShoulder(0);
   if(digitalRead(shks2)) fixShoulder(1);
 
-  // Lasin tilanne
+  // Lasin tilanne (toistaiseksi lomalla)
   // Serial.println(digitalRead(lasi));
-  if(digitalRead(lasi)) fillerUp();
+  // if(digitalRead(lasi)) fillerUp();
   
   // Silmä arpa
   if(!alea) alea = random(3);
@@ -179,6 +182,14 @@ void loop() {
     kuse();
   }
 
+  if(command == "c0") { // Käännä tuolia
+    tuolia(0);
+  }
+  
+  if(command == "c1") { // Käännä tuolia
+    tuolia(1);
+  }
+
   if(command == "t") { // Täytä lasi -sarja
     fillerUp();
   }
@@ -230,12 +241,13 @@ void zeroMotors() {
   wrist.run();
   digitalWrite(suu, HIGH);
   digitalWrite(silmat, HIGH);
+  digitalWrite(tuoli, HIGH);
   // TODO: add all others
 }
 
 void pose(int pose) {
   switch(pose) {
-    // Rewrite poses 1-7 as appropriate 
+    // Rewrite poses 5-7 as appropriate 
     case 1: // Tuoppi lepo
       shoulder.moveTo(0);
       shoulder.run();
@@ -307,7 +319,7 @@ void pose(int pose) {
       wrist.run();
       break;
     case 8: // Fill 'er up
-      shoulder.moveTo(-2500);
+      shoulder.moveTo(-2300);
       shoulder.run();
       spreader.moveTo(500);
       spreader.run();
@@ -322,9 +334,10 @@ void pose(int pose) {
 void drink() {
     digitalWrite(sip, LOW);
     digitalWrite(suu, LOW);
-    delay(5000);
+    delay(10000);
     digitalWrite(sip, HIGH);
     digitalWrite(suu, HIGH);
+    delay(100);
     command = "";
 }
 
@@ -332,6 +345,7 @@ void fill() {
     digitalWrite(tap, LOW);
     delay(6000);
     digitalWrite(tap, HIGH);
+    delay(100);
     command = "";
 }
 
@@ -339,17 +353,27 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(5000);
+  delay(10000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
+  delay(100);
   command = "";
 }
 
 void kuse() {
+  tuolia(0);
+  delay(1000);
   digitalWrite(kusi, LOW);
   delay(6000);
   digitalWrite(kusi, HIGH);
+  delay(100);
+  command = "";
+}
+
+void tuolia(int on) {
+  if(on) digitalWrite(tuoli, LOW);
+  else digitalWrite(tuoli, HIGH);
   delay(100);
   command = "";
 }
@@ -439,12 +463,18 @@ void fixElbow(int direction) {
 }
 
 void fillerUp() {
-  Serial.println("Nytkö?");
+  command = "";
+  tuolia(0);
   delay(500);
-  if(digitalRead(lasi)) {
-    Serial.println("Nyt!");
-    Serial.println("t");
-    while(hanasilma.getDistance() > 3) pose(8);
-    Serial.println("Nyt ois lasi paikoillaan...");
-  }
+  //if(digitalRead(lasi)) { // Lasin waterLevelSensor on lomalla
+    //Serial.println("Nyt!");
+    //Serial.println("t");
+  while(hanasilma.getDistance() > 3) pose(8);
+  //Serial.println("Nyt ois lasi paikoillaan...");
+  fill();
+  fill();
+  fill(); // Kuinka monta kertaa x6sec
+  delay(100);
+  //fillNielu();
+  //}
 }
