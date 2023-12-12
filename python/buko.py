@@ -7,6 +7,7 @@ from random import random
 from amplitude_IF import Output
 from arduinoIF import Arduino
 from time import sleep
+import time
 import signal
 
 flush = sys.stdout.flush
@@ -23,6 +24,7 @@ apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I di
 cls = 14
 s = subject = cue = None
 otetutHuikat = 0
+wasStillSpeaking = 0
 output = Output()
 arduino = Arduino()
 arduino.connect()
@@ -40,16 +42,24 @@ def signal_term_handler(signal, frame):
     exit()
 signal.signal(signal.SIGTERM, signal_term_handler)
 
-#def drink():
+def drink():
+    arduino.write("d")
+    otetutHuikat += 1
+    #sleep(10)
     
 def fillerUp():
+    mouth.speak("Looks like I need another drink")
     arduino.write("t")
     sleep(30)
     arduino.write("1")
-    sleep(2)
-    arduino.write("4")
+    sleep(5)
+    arduino.write("n")
+    #arduino.write("4")
+    sleep(10)
+
+def piss():
+    arduino.write('k')
     sleep(3)
-    arduino.write("1")
 
 flush()
 mouth.speak("Alright, I'm on.")
@@ -71,13 +81,21 @@ while True:
                 s = subject = cue = None
                 #arduino.write('p'+str(output.read()))
                 arduino.write("p1")
-                received = arduino.read()
+                wasStillSpeaking = time.time()
+                if(random()*10 < 5):
+                    arduino.write('c'+str(round(random())))
+                #received = arduino.read()
                 
             if not mouth.isSpeaking():
+                if(time.time() - wasStillSpeaking < 2):
+                    arduino.write("d")
+                    otetutHuikat += 1
+                    #sleep(10)
                 arduino.write("p0")
                 print('\n'*cls)
                 flush()
-                if otetutHuikat > 5:
+                if otetutHuikat > 3:
+                    piss()
                     fillerUp()
                     otetutHuikat = 0
                     
@@ -119,9 +137,6 @@ while True:
                             arduino.write("p1")
                             mouth.speak(decline[(int)(random()*len(decline))])
                             arduino.write("p0")
-                            arduino.write("d")
-                            otetutHuikat += 1
-                            sleep(5)
                             sleep(.5)
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
