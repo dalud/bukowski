@@ -20,10 +20,9 @@ int sip = 2; // Galley pump (1.)
 int tap = 3; // Pilge pump (2.)
 int tukos = 4; // 24V valve
 int nielu = 5; // 12V valve
-int suu = 6;
+int suu = 6; // Output to MotorShield
 int kusi = 7; // Mahan kääntäjä
 int tuoli = 14;
-int silmat = 18;
 int eks = 31; // Elbow kill switch (positive), alarm = 5500
 int eks2 = 32; // Alarm = -400
 int spks = 34; // Spreader kill switch (positive), alarm = 2700
@@ -39,14 +38,12 @@ String command;
 char poses[] = { '1', '2', '3', '4', '5', '6', '7' };
 
 int counter; // Universal counter
-int alea; // Silmä arpa
 
 
 void setup() {
   Serial.begin(9600);
 
   counter = 0;
-  alea = 0;
 
   // Outputs
   pinMode(sip, OUTPUT);
@@ -62,9 +59,7 @@ void setup() {
   pinMode(tuoli, OUTPUT);
   digitalWrite(tuoli, HIGH);
   pinMode(suu, OUTPUT);
-  digitalWrite(suu, HIGH);
-  pinMode(silmat, OUTPUT);
-  digitalWrite(silmat, HIGH);
+  digitalWrite(suu, LOW);
   
   // Inputs
   pinMode(eks, INPUT);
@@ -102,7 +97,6 @@ void setup() {
 
 void loop() {
   counter++;
-  //Serial.write(counter);
 
   // Kill switch checks
   if(digitalRead(eks)) fixElbow(1);
@@ -116,19 +110,6 @@ void loop() {
   // Serial.println(digitalRead(lasi));
   // if(digitalRead(lasi)) fillerUp();
   
-  // Silmä arpa
-  if(!alea) alea = random(3);
-  
-  if(counter > 7500) {
-    liikutaSilmia(alea);
-    
-    if(counter > 10000) {
-      liikutaSilmia(0);
-      counter = 0;
-      alea = 0;
-    }
-  }
-
   // Read command from Serial Bus
   if (Serial.available()) {
     command = Serial.readStringUntil('\n');
@@ -151,7 +132,7 @@ void loop() {
   if(command.startsWith("sp")) { // Spreader
     if(command.length() > 2) spreader.moveTo(command.substring(2).toInt());
     else spreader.moveTo(sp);
-    spreader.run();    
+    spreader.run();
   }
   if(command.startsWith("e")) { // Elbow
     if(command.length() > 1) elbow.moveTo(command.substring(1).toInt());
@@ -164,7 +145,7 @@ void loop() {
     wrist.run();
   }
   
-   // Others, letkusto
+  // Others, letkusto
   if(command == "d") { // Drink
     drink();
   }
@@ -198,10 +179,6 @@ void loop() {
     if(command.length() > 1) liikutaSuuta(command.substring(1).toInt());
   }
 
-  if(command == "s") { // Silmät käyntiin ON
-    digitalWrite(silmat, LOW);
-  }
-
   // Set arm poses
   if(command == "1") { // Perus tuoppi lepo
     pose(1);
@@ -227,7 +204,6 @@ void loop() {
   if(command == "8") { // Fill
     pose(8);
   }
-  // TODO: default to 1 (in Rasp?)
 }
 
 void zeroMotors() {
@@ -239,12 +215,12 @@ void zeroMotors() {
   elbow.run();
   wrist.moveTo(0);
   wrist.run();
-  digitalWrite(suu, HIGH);
-  digitalWrite(silmat, HIGH);
+  digitalWrite(suu, LOW);
   digitalWrite(tuoli, HIGH);
   // TODO: add all others
 }
 
+// Käsivarren poset
 void pose(int pose) {
   switch(pose) {
     // Rewrite poses 5-7 as appropriate 
@@ -333,10 +309,8 @@ void pose(int pose) {
 
 void drink() {
     digitalWrite(sip, LOW);
-    digitalWrite(suu, LOW);
-    delay(10000);
+    delay(9000);
     digitalWrite(sip, HIGH);
-    digitalWrite(suu, HIGH);
     delay(100);
     command = "";
 }
@@ -353,7 +327,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(10000);
+  delay(11000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
@@ -380,10 +354,11 @@ void tuolia(int on) {
 
 void liikutaSuuta(int amp) {
   if(amp) {
-    digitalWrite(suu, LOW);
+    // TODO: tarkista suunta!
+    digitalWrite(suu, HIGH);
     digitalWrite(LED_BUILTIN, HIGH);
   } else {
-    digitalWrite(suu, HIGH);
+    digitalWrite(suu, LOW);
     digitalWrite(LED_BUILTIN, LOW);
   }
 }
@@ -399,17 +374,7 @@ void heiluttelu() {
   wrist.run();
 }
 
-void liikutaSilmia(long alea) {
-  switch(alea) {
-    case 1:
-      digitalWrite(silmat, LOW);
-      break;
-    default:
-      digitalWrite(silmat, HIGH);
-      break;
-  }
-}
-
+// Käsivarren Kill Switch -reaktiot
 void fixShoulder(int direction) {
   if(direction) {
     command = "";
@@ -462,6 +427,7 @@ void fixElbow(int direction) {
   }
 }
 
+// Lasin täyttö -sarja
 void fillerUp() {
   command = "";
   tuolia(0);
