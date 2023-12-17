@@ -1,0 +1,17 @@
+# Environment
+[env]
+name=Bukowski
+#dir=/home/pi/robokerho/samples/ile/Hurjajutut_LeftRightPan/
+bt=00:42:79:1E:CF:3F
+#robo=ile
+
+#name=Veke
+#robo=veke
+
+#name=Marina
+#bt=D8:37:3B:8F:7A:0C
+#dir=/home/pi/robokerho/samples/marina/
+#robo=marina
+
+# Hardware
+[hw]
