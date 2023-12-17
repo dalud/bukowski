@@ -25,10 +25,13 @@ cls = 14
 s = subject = cue = None
 otetutHuikat = 0
 wasStillSpeaking = 0
+pose = 1
 output = Output()
 arduino = Arduino()
 arduino.connect()
 
+# Select bluetooth device
+#exec(open('/home/pi/bukowski/python/selectBT.py', 'r').read())
 
 def exit():
     print("User exit")
@@ -48,11 +51,16 @@ def drink():
     #sleep(10)
     
 def fillerUp():
-    mouth.speak("Looks like I need another drink")
+    sleep(11)
+    arduino.write("h")
+    sleep(1)
+    mouth.speakAsync("Looks like I need another drink")
+    sleep(6)
+    arduino.write("8")
     arduino.write("t")
-    sleep(30)
+    sleep(20)
     arduino.write("1")
-    sleep(5)
+    sleep(6)
     arduino.write("n")
     #arduino.write("4")
     sleep(10)
@@ -69,12 +77,9 @@ sleep(2)
 while True:
     received = arduino.read()
     if received:
+        # Mahdollisesti joskus
         continue
-        #print("Nyt tuli hommia:", received)
-        #flush()
-        #if received == "t":
-                #print("täyttää vissiin pitäis...")
-                #flush()
+    
     else:
         try:
             if mouth.isSpeaking():
@@ -82,8 +87,13 @@ while True:
                 #arduino.write('p'+str(output.read()))
                 arduino.write("p1")
                 wasStillSpeaking = time.time()
+                # Tuoli
                 if(random()*10 < 5):
                     arduino.write('c'+str(round(random())))
+                if(random()*10 < 7):
+                    pose = round(random()*3)
+                if not pose: pose = 1
+                arduino.write(str(pose))
                 #received = arduino.read()
                 
             if not mouth.isSpeaking():
