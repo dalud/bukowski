@@ -22,8 +22,8 @@ void setup() {
   // Suu Input signal
   pinMode(input, INPUT);
 
-  silmat.setSpeed(255);
-  suu.setSpeed(255);
+  silmat.setSpeed(50);
+  suu.setSpeed(40);
   
   silmat.run(RELEASE);
   suu.run(RELEASE);

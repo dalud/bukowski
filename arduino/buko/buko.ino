@@ -327,7 +327,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(11000);
+  delay(13000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
@@ -429,9 +429,9 @@ void fixElbow(int direction) {
 
 // Lasin täyttö -sarja
 void fillerUp() {
-  command = "";
+  //command = "";
   tuolia(0);
-  delay(500);
+  delay(50);
   //if(digitalRead(lasi)) { // Lasin waterLevelSensor on lomalla
     //Serial.println("Nyt!");
     //Serial.println("t");
