@@ -42,7 +42,7 @@ class Ear:
             with sd.RawInputStream(dtype='int16', channels=1, callback=self.recordCallback):
                 print("I am listening...")
                 flush()
-                timeout = time.time()+3 #Seconds to tip your ear                
+                timeout = time.time()+5 #Seconds to tip your ear                
 
                 while self.listening and time.time() < timeout:
                     data = self.q.get()
