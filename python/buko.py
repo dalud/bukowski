@@ -9,7 +9,9 @@ from arduinoIF import Arduino
 from time import sleep
 import time
 import signal
+from delayedPrint_IF import DelayedPrint
 
+printer = DelayedPrint()
 flush = sys.stdout.flush
 
 ear = Ear()
@@ -25,7 +27,7 @@ cls = 14
 s = subject = cue = None
 otetutHuikat = 0
 wasStillSpeaking = 0
-pose = 1
+#pose = 1
 output = Output()
 arduino = Arduino()
 arduino.connect()
@@ -73,6 +75,7 @@ def piss():
 
 flush()
 mouth.speak("Alright, I'm on.")
+flush()
 arduino.write("1")
 sleep(2)
 
@@ -80,6 +83,8 @@ while True:
     received = arduino.read()
     if received:
         # Mahdollisesti joskus
+        print(received)
+        flush()
         continue
     
     else:
