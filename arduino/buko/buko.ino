@@ -433,14 +433,9 @@ void fillerUp() {
   tuolia(0);
   delay(50);
   //if(digitalRead(lasi)) { // Lasin waterLevelSensor on lomalla
-    //Serial.println("Nyt!");
-    //Serial.println("t");
   while(hanasilma.getDistance() > 3) pose(8);
-  //Serial.println("Nyt ois lasi paikoillaan...");
   fill();
   fill();
   fill(); // Kuinka monta kertaa x6sec
   delay(100);
-  //fillNielu();
-  //}
 }
