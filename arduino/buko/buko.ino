@@ -14,6 +14,7 @@ int w = 3000;
 int speedo = 2000;
 int accel = 1500;
 int speedo_elbow = 20000;
+int speedo_spreader = 1500;
 
 // Pumput, venttiilit etc.
 int sip = 2; // Galley pump (1.)
@@ -42,7 +43,7 @@ int counter; // Universal counter
 
 void setup() {
   Serial.begin(9600);
-
+  
   counter = 0;
 
   // Outputs
@@ -81,7 +82,7 @@ void setup() {
   
   spreader.setMaxSpeed(5000); //SPEED = Steps / second  
   spreader.setAcceleration(accel); //ACCELERATION = Steps /(second)^2    
-  spreader.setSpeed(speedo);
+  spreader.setSpeed(speedo_spreader);
 
   elbow.setMaxSpeed(speedo_elbow); //SPEED = Steps / second  
   elbow.setAcceleration(accel); //ACCELERATION = Steps /(second)^2    
@@ -158,27 +159,21 @@ void loop() {
   if(command == "h") { // Heiluttelu
     heiluttelu();
   }
-
   if(command == "k") { // Kuse
     kuse();
   }
-
   if(command == "c0") { // Käännä tuolia
     tuolia(0);
   }
-  
   if(command == "c1") { // Käännä tuolia
     tuolia(1);
   }
-
   if(command == "t") { // Täytä lasi -sarja
     fillerUp();
   }
-
   if(command.startsWith("p")) { // Puhu/suu
     if(command.length() > 1) liikutaSuuta(command.substring(1).toInt());
   }
-
   // Set arm poses
   if(command == "1") { // Perus tuoppi lepo
     pose(1);
@@ -327,7 +322,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(13000);
+  delay(14000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
@@ -429,7 +424,6 @@ void fixElbow(int direction) {
 
 // Lasin täyttö -sarja
 void fillerUp() {
-  //command = "";
   tuolia(0);
   delay(50);
   //if(digitalRead(lasi)) { // Lasin waterLevelSensor on lomalla

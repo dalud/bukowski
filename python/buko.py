@@ -23,6 +23,7 @@ played = []
 affirm = ['yes', 'yeah', 'ah', 'sure', 'well', 'eh']
 decline = ['no', "I don't think so", "sorry, no", 'negative']
 apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I didn't get that"]
+fillersUp = ["Looks like I need another drink", "I need to fill'er up!", "Running dry again It seems...", "Maybe one more, eh?"]
 cls = 14
 s = subject = cue = None
 otetutHuikat = 0
@@ -56,7 +57,7 @@ def fillerUp():
     sleep(11)
     arduino.write("h")
     sleep(1)
-    mouth.speakAsync("Looks like I need another drink")
+    mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
     sleep(6)
     arduino.write("z")
     sleep(1)
@@ -107,7 +108,7 @@ while True:
                 if(time.time() - wasStillSpeaking < 2):
                     arduino.write("d")
                     otetutHuikat += 1
-                    #sleep(10)
+                    
                 arduino.write("p0")
                 print('\n'*cls)
                 flush()
