@@ -426,6 +426,13 @@ void fixElbow(int direction) {
 void fillerUp() {
   tuolia(0);
   delay(50);
+
+  //if(digitalRead(lasi)) { // Lasin waterLevelSensor on lomalla
+  while(hanasilma.getDistance() > 3) pose(8);
+  fill();
+  fill();
+  fill(); // Kuinka monta kertaa x6sec
+
   pose(8);
   while(stillRolling()) pose(8);
 
