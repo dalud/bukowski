@@ -427,16 +427,12 @@ void fillerUp() {
   tuolia(0);
   delay(50);
   pose(8);
-  while(stillRolling()) {
-    Serial.println(hanasilma.getDistance());
-    pose(8);
-  }
-  if(hanasilma.getDistance() < 5) {
-    Serial.println("Nyt tulis hanasta kaljaa...");
-    //fill(); 
-    //fill();
-    //fill(); // Kuinka monta kertaa x6sec
-  } 
+  while(stillRolling()) pose(8);
+
+  if(hanasilma.getDistance() < 10) fill();
+  if(hanasilma.getDistance() < 10) fill();
+  if(hanasilma.getDistance() < 10) fill();
+  
   delay(100);
 }
 
