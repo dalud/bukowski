@@ -106,7 +106,7 @@ void loop() {
   if(digitalRead(spks2)) fixSpreader(0);
   if(digitalRead(shks)) fixShoulder(0);
   if(digitalRead(shks2)) fixShoulder(1);
-
+  
   // Lasin tilanne (toistaiseksi lomalla)
   // Serial.println(digitalRead(lasi));
   // if(digitalRead(lasi)) fillerUp();
@@ -183,7 +183,7 @@ void loop() {
   }
   if(command == "3") { // Juoma 2
     pose(3);
-  } 
+  }
   if(command == "4") { // Skol!
     pose(4);
   }
@@ -426,11 +426,22 @@ void fixElbow(int direction) {
 void fillerUp() {
   tuolia(0);
   delay(50);
-  while(hanasilma.getDistance() > 3) {
-    pose(8);
-  }
-  fill();
-  fill();
-  fill(); // Kuinka monta kertaa x6sec
+
+  pose(8);
+  while(stillRolling()) pose(8);
+
+  if(hanasilma.getDistance() < 10) fill();
+  if(hanasilma.getDistance() < 10) fill();
+  if(hanasilma.getDistance() < 10) fill();
+  
   delay(100);
+}
+
+bool stillRolling() {
+  /*Serial.print(elbow.distanceToGo());
+  Serial.print(":");
+  Serial.print(fabs(shoulder.distanceToGo()));
+  Serial.print(":");
+  Serial.println(spreader.distanceToGo());*/
+  return elbow.distanceToGo() || fabs(shoulder.distanceToGo()) || spreader.distanceToGo();
 }
