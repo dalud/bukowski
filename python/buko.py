@@ -51,6 +51,7 @@ def drink():
     #otetutHuikat += 1
     
 def fillerUp():
+    print('\n'*cls)
     print("Getting drink...")
     flush()
     #sleep(11) #Is this really necessary
@@ -60,16 +61,19 @@ def fillerUp():
     sleep(5)
     arduino.write("z")
     sleep(2)
+    print('\n'*cls)
     print("Filling glass...")
     flush()
     arduino.write("t")
     sleep(20)
     arduino.write("1")
     sleep(6)
+    print('\n'*cls)
     print("Filling nielu...")
     flush()
     arduino.write("n")
     sleep(10)
+    print('\n'*cls)
 
 def piss():
     print("Pissing...")
@@ -114,8 +118,7 @@ while True:
                     
             cue = ear.listen(True, s)
             if cue: subject = sb.parse(cue[0])
-        else:
-            subject = None
+            else: subject = None
         flush()
         if subject:
             for s in subject:
