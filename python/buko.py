@@ -27,7 +27,7 @@ cls = 14
 s = subject = cue = None
 otetutHuikat = 0
 wasStillSpeaking = 0
-#pose = 1
+pose = 1
 output = Output()
 arduino = Arduino()
 arduino.connect()
@@ -60,7 +60,7 @@ def fillerUp():
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
     sleep(5)
     arduino.write("z")
-    sleep(2)
+    sleep(3)
     print('\n'*cls)
     print("Filling glass...")
     flush()
@@ -85,9 +85,15 @@ flush()
 mouth.speak("Alright, I'm on.")
 flush()
 arduino.write("1")
-sleep(2)
+sleep(3)
 
 while True:
+    received = arduino.read()
+    #if received:
+        # Mahdollisesti joskus
+        #print(received)
+        #flush()
+        #continue
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
