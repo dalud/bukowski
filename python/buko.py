@@ -32,7 +32,8 @@ output = Output()
 arduino = Arduino()
 arduino.connect()
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(11, GPIO.IN)
+GPIO.setup(15, GPIO.IN) #Lasin uppokytkin
+GPIO.setup(13, GPIO.IN) #Nielun uppokytkin
 
 def exit():
     print("User exit")
@@ -48,32 +49,29 @@ signal.signal(signal.SIGTERM, signal_term_handler)
 
 def drink():
     arduino.write("d")
-    #otetutHuikat += 1
     
 def fillerUp():
     print('\n'*cls)
     print("Getting drink...")
     flush()
-    #sleep(11) #Is this really necessary
     arduino.write("h")
-    sleep(1)
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
-    sleep(5)
+    sleep(6)
     arduino.write("z")
     sleep(3)
     print('\n'*cls)
     print("Filling glass...")
     flush()
     arduino.write("t")
-    sleep(20)
+    sleep(21)
     arduino.write("1")
-    sleep(6)
+    sleep(4)
     print('\n'*cls)
-    print("Filling nielu...")
-    flush()
-    arduino.write("n")
-    sleep(10)
-    print('\n'*cls)
+    #print("Filling nielu...")
+    #flush()
+    #arduino.write("n")
+    #sleep(10)
+    #print('\n'*cls)
 
 def piss():
     print("Pissing...")
@@ -90,7 +88,6 @@ sleep(3)
 while True:
     received = arduino.read()
     #if received:
-        # Mahdollisesti joskus
         #print(received)
         #flush()
         #continue
@@ -111,17 +108,22 @@ while True:
         if not mouth.isSpeaking():
             if(time.time() - wasStillSpeaking < 2):
                 arduino.write("d")
-                #otetutHuikat += 1
                     
             arduino.write("p0")
             print('\n'*cls)
             flush()
-            #if otetutHuikat > 3:
-            if GPIO.input(11):
+            # Is tuoppi tyhjä?
+            if GPIO.input(15):
                 piss()
                 fillerUp()
-                #otetutHuikat = 0
-                    
+            # Is nielu tyhjä?
+            if GPIO.input(13):
+                print("Filling nielu...")
+                flush()
+                arduino.write("n")
+                sleep(10)
+                print('\n'*cls)
+    
             cue = ear.listen(True, s)
             if cue: subject = sb.parse(cue[0])
             else: subject = None
