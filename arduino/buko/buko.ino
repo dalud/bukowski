@@ -322,7 +322,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(10000);
+  delay(8000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
