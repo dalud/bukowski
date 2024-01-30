@@ -107,10 +107,6 @@ void loop() {
   if(digitalRead(shks)) fixShoulder(0);
   if(digitalRead(shks2)) fixShoulder(1);
   
-  // Lasin tilanne (toistaiseksi lomalla)
-  // Serial.println(digitalRead(lasi));
-  // if(digitalRead(lasi)) fillerUp();
-  
   // Read command from Serial Bus
   if (Serial.available()) {
     command = Serial.readStringUntil('\n');
