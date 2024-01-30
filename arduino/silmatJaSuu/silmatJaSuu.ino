@@ -24,9 +24,9 @@ void setup() {
   // Suu Input signal
   pinMode(input, INPUT);
 
-  silmat.setSpeed(20);
+  silmat.setSpeed(30);
   suu.setSpeed(30);
-  luomet.setSpeed(40);
+  luomet.setSpeed(70);
   
   silmat.run(RELEASE);
   suu.run(RELEASE);
@@ -41,9 +41,9 @@ void loop() {
 
   // Silmä arpa
   if(!alea) alea = random(2);
-  if(counter > 75) {
+  if(counter > 100) {
     liikutaSilmia(alea);
-    long stop = random(80, 200);
+    long stop = random(105, 200);
         if(counter > stop) {
       liikutaSilmia(0);
       counter = 0;
@@ -85,7 +85,7 @@ void liikutaSilmia(long alea) {
 
 void liikutaLuomia() {
   luomet.run(FORWARD);
-  delay(900);
+  delay(700);
   luomet.run(RELEASE);
   delay(10);
 }
