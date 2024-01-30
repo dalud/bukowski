@@ -1,7 +1,8 @@
 #include <AFMotor.h>
 
-AF_DCMotor silmat(1); // Silmät
-AF_DCMotor suu(2); // Suu
+AF_DCMotor silmat(1);
+AF_DCMotor suu(2);
+AF_DCMotor luomet(3);
 
 byte input = A0;
 int alea; // Silmä arpa
@@ -14,6 +15,7 @@ void setup() {
 
   counter = 0;
   alea = 0;
+
   dir = FORWARD;
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -22,11 +24,14 @@ void setup() {
   // Suu Input signal
   pinMode(input, INPUT);
 
-  silmat.setSpeed(50);
-  suu.setSpeed(40);
+  silmat.setSpeed(20);
+  suu.setSpeed(30);
+  luomet.setSpeed(40);
   
   silmat.run(RELEASE);
   suu.run(RELEASE);
+  luomet.run(RELEASE);
+
   delay(500);
 }
 
@@ -36,7 +41,6 @@ void loop() {
 
   // Silmä arpa
   if(!alea) alea = random(2);
-  //Serial.println(alea);
   if(counter > 75) {
     liikutaSilmia(alea);
     long stop = random(80, 200);
@@ -57,9 +61,10 @@ void loop() {
     digitalWrite(LED_BUILTIN, LOW);
     delay(10);
   }
+
+  // Luomet arvonta
+  if(random(300) < 1) liikutaLuomia();
   
-  //silmat.run(FORWARD);
-  //suu.run(FORWARD);
   delay(10);
 }
 
@@ -67,7 +72,6 @@ void liikutaSilmia(long alea) {
   switch(alea) {
     case 1:
       silmat.run(dir);
-      //else silmat.run(BACKWARD);
       digitalWrite(LED_BUILTIN, HIGH);
       break;
     default:
@@ -77,4 +81,11 @@ void liikutaSilmia(long alea) {
       digitalWrite(LED_BUILTIN, LOW);
       break;
   }
+}
+
+void liikutaLuomia() {
+  luomet.run(FORWARD);
+  delay(900);
+  luomet.run(RELEASE);
+  delay(10);
 }
