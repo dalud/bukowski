@@ -9,7 +9,7 @@ class DelayedPrint:
 
     def print(self, message):
         chars = set('/-,.:;()')
-        delay = .08743
+        delay = .08742
         if any((c in chars) for c in message):
             delay = delay
         else:

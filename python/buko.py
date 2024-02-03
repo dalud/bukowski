@@ -34,10 +34,12 @@ arduino.connect()
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(15, GPIO.IN) #Lasin uppokytkin
 GPIO.setup(13, GPIO.IN) #Nielun uppokytkin
+GPIO.setup(16, GPIO.OUT) #Suu
 
 def exit():
     print("User exit")
     flush()
+    GPIO.output(16, GPIO.LOW)
     arduino.write("z")
     sys.exit()
 
@@ -55,8 +57,11 @@ def fillerUp():
     print("Getting drink...")
     flush()
     arduino.write("h")
+    GPIO.output(16, GPIO.HIGH)
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
-    sleep(7)
+    sleep(3)
+    GPIO.output(16, GPIO.LOW)
+    sleep(4)
     arduino.write("z")
     sleep(4)
     print('\n'*cls)
@@ -75,8 +80,10 @@ def piss():
     sleep(8)
 
 flush()
+GPIO.output(16, GPIO.HIGH)
 mouth.speak("Alright, I'm on.")
 flush()
+GPIO.output(16, GPIO.LOW)
 arduino.write("1")
 sleep(3)
 
@@ -89,8 +96,8 @@ while True:
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
-            #arduino.write("p1")
-            arduino.write('p'+str(output.read()))
+            #arduino.write('p'+str(output.read()))
+            GPIO.output(16, GPIO.HIGH)
             wasStillSpeaking = time.time()
             # Tuoli
             if(random()*10 < 5):
@@ -102,10 +109,11 @@ while True:
             arduino.write(str(pose))
                 
         if not mouth.isSpeaking():
+            GPIO.output(16, GPIO.LOW)                
             if(time.time() - wasStillSpeaking < 2):
                 arduino.write("d")
                     
-            arduino.write("p0")
+            GPIO.output(16, GPIO.LOW)
             print('\n'*cls)
             flush()
             # Is tuoppi tyhjä?
@@ -130,14 +138,14 @@ while True:
                     flush()
                     reply = searcher.find(s, played)
                     if reply and not reply in played and not mouth.isSpeaking():
-                        arduino.write("p1")
+                        GPIO.output(16, GPIO.HIGH)
                         mouth.speak(s+"?")
-                        arduino.write("p0")
+                        GPIO.output(16, GPIO.LOW)
                         sleep(.5)
                         s = subject = cue = None
-                        arduino.write("p1")
+                        GPIO.output(16, GPIO.HIGH)
                         mouth.speak(affirm[(int)(random()*len(affirm))])
-                        arduino.write("p0")
+                        GPIO.output(16, GPIO.LOW)
                         sleep(.5)
                         print('\n'*cls)
                         flush()
@@ -149,14 +157,14 @@ while True:
                         if len(played) > 200: played.clear()
                         break
                     if subject.index(s) == len(subject)-1:
-                        arduino.write("p1")
+                        GPIO.output(16, GPIO.HIGH)
                         mouth.speak(s+"?")
-                        arduino.write("p0")
+                        GPIO.output(16, GPIO.LOW)
                         sleep(.5)
                         s = subject = cue = None
-                        arduino.write("p1")
+                        GPIO.output(16, GPIO.HIGH)
                         mouth.speak(decline[(int)(random()*len(decline))])
-                        arduino.write("p0")
+                        GPIO.output(16, GPIO.LOW)
                         sleep(.5)
     except KeyboardInterrupt:
         print("KeyboardInterrupt")

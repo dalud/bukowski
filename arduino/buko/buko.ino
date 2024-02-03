@@ -318,7 +318,7 @@ void fillNielu() {
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
-  delay(8000);
+  delay(7000);
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
@@ -426,9 +426,9 @@ void fillerUp() {
   pose(8);
   while(stillRolling()) pose(8);
 
-  if(hanasilma.getDistance() < 10) fill();
-  if(hanasilma.getDistance() < 10) fill();
-  if(hanasilma.getDistance() < 10) fill();
+  if(hanasilma.getDistance() < 20) fill();
+  if(hanasilma.getDistance() < 20) fill();
+  if(hanasilma.getDistance() < 20) fill();
   
   delay(100);
 }
