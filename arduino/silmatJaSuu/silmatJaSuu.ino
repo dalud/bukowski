@@ -8,6 +8,8 @@ byte input = A0;
 int alea; // Silmä arpa
 byte dir; // Silmien suunta
 int counter; // Universal counter
+int suun_suunta = 1;
+int luomien_suunta = 1;
 
 
 void setup() {
@@ -21,7 +23,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   
-  // Suu Input signal
+  // Suu Input signal0
   pinMode(input, INPUT);
 
   silmat.setSpeed(30);
@@ -48,12 +50,14 @@ void loop() {
       liikutaSilmia(0);
       counter = 0;
       alea = 0;
+      suun_suunta = random(1,3);
     }
   }
 
   // Suu input handling
   if(digitalRead(input)) {
-    suu.run(FORWARD);
+    suu.setSpeed(random(10,70));
+    suu.run(suun_suunta);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(10);
   } else {
@@ -63,7 +67,7 @@ void loop() {
   }
 
   // Luomet arvonta
-  if(random(300) < 1) liikutaLuomia();
+  if(random(200) < 1) liikutaLuomia();
   
   delay(10);
 }
@@ -84,8 +88,10 @@ void liikutaSilmia(long alea) {
 }
 
 void liikutaLuomia() {
-  luomet.run(FORWARD);
-  delay(700);
+  if (luomien_suunta == 1) luomien_suunta = 2;
+  else luomien_suunta = 1;
+  luomet.run(luomien_suunta);
+  delay(random(500, 8 00));
   luomet.run(RELEASE);
   delay(10);
 }
