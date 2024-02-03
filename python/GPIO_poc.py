@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 
-pin = 15
+pin = 13
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(pin, GPIO.IN)
  

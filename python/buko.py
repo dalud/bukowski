@@ -56,9 +56,9 @@ def fillerUp():
     flush()
     arduino.write("h")
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
-    sleep(6)
+    sleep(7)
     arduino.write("z")
-    sleep(3)
+    sleep(4)
     print('\n'*cls)
     print("Filling glass...")
     flush()
@@ -67,12 +67,7 @@ def fillerUp():
     arduino.write("1")
     sleep(4)
     print('\n'*cls)
-    #print("Filling nielu...")
-    #flush()
-    #arduino.write("n")
-    #sleep(10)
-    #print('\n'*cls)
-
+    
 def piss():
     print("Pissing...")
     flush()
@@ -94,7 +89,8 @@ while True:
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
-            arduino.write("p1")
+            #arduino.write("p1")
+            arduino.write('p'+str(output.read()))
             wasStillSpeaking = time.time()
             # Tuoli
             if(random()*10 < 5):
