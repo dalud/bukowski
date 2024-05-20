@@ -25,8 +25,8 @@ apologize = ["sorry?", "excuse me?", "huh?", "what?", "what do you mean?", "I di
 fillersUp = ["Looks like I need another drink", "I need to fill'er up!", "Running dry again It seems...", "Maybe one more, eh?"]
 cls = 14
 s = subject = cue = None
-otetutHuikat = 0
 wasStillSpeaking = 0
+arduinoBusy = True
 pose = 1
 output = Output()
 arduino = Arduino()
@@ -61,17 +61,17 @@ def fillerUp():
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
     sleep(3)
     GPIO.output(16, GPIO.LOW)
-    sleep(4)
-    arduino.write("z")
-    sleep(4)
-    print('\n'*cls)
-    print("Filling glass...")
-    flush()
+    #sleep(4)
+    #arduino.write("z")
+    #sleep(4)
+    #print('\n'*cls)
+    #print("Filling glass...")
+    #flush()
     arduino.write("t")
-    sleep(21)
-    arduino.write("1")
-    sleep(4)
-    print('\n'*cls)
+    #sleep(21)
+    #arduino.write("1")
+    #sleep(4)
+    #print('\n'*cls)
     
 def piss():
     print("Pissing...")
@@ -89,10 +89,12 @@ sleep(3)
 
 while True:
     received = arduino.read()
-    #if received:
-        #print(received)
-        #flush()
-        #continue
+    if received:
+        print(received)
+        if received == "busy": arduinoBusy = True
+        else: arduinoBusy = False
+        flush()
+        continue
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
@@ -103,14 +105,15 @@ while True:
             if(random()*10 < 5):
                 arduino.write('c'+str(round(random())))
             # Käsi
-            if(random()*10 < 7):
-                pose = round(random()*3)
-            if not pose: pose = 1
-            arduino.write(str(pose))
+            if not arduinoBusy:
+                if(random()*10 < 7):
+                    pose = round(random()*3)
+                if not pose: pose = 1
+                arduino.write(str(pose))
                 
         if not mouth.isSpeaking():
             GPIO.output(16, GPIO.LOW)                
-            if(time.time() - wasStillSpeaking < 2):
+            if(time.time() - wasStillSpeaking < 2) and not arduinoBusy:
                 arduino.write("d")
                     
             GPIO.output(16, GPIO.LOW)
@@ -125,8 +128,8 @@ while True:
                 print("Filling nielu...")
                 flush()
                 arduino.write("n")
-                sleep(10)
-                print('\n'*cls)
+                #sleep(10)
+                #print('\n'*cls)
     
             cue = ear.listen(True, s)
             if cue: subject = sb.parse(cue[0])
@@ -154,7 +157,7 @@ while True:
                         print(":msg:"+reply)
                         flush()
                         reply = None
-                        if len(played) > 200: played.clear()
+                        if len(played) > 100: played.clear()
                         break
                     if subject.index(s) == len(subject)-1:
                         GPIO.output(16, GPIO.HIGH)
