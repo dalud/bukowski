@@ -61,6 +61,8 @@ void setup() {
   digitalWrite(tuoli, HIGH);
   pinMode(suu, OUTPUT);
   digitalWrite(suu, LOW);
+  pinMode(A1, OUTPUT);
+  digitalWrite(A1, LOW);
   
   // Inputs
   pinMode(eks, INPUT);
@@ -97,19 +99,21 @@ void setup() {
 
 
 void loop() {
-  counter++;
+  counter++; 
 
   // Kill switch checks
-  if(digitalRead(eks)) fixElbow(1);
+  // TODO: Remember to return to the fold after dev !!!
+  /*if(digitalRead(eks)) fixElbow(1);
   if(digitalRead(eks2)) fixElbow(0);
   if(digitalRead(spks)) fixSpreader(1);
   if(digitalRead(spks2)) fixSpreader(0);
   if(digitalRead(shks)) fixShoulder(0);
-  if(digitalRead(shks2)) fixShoulder(1);
+  if(digitalRead(shks2)) fixShoulder(1);*/
   
   // Read command from Serial Bus
   if (Serial.available()) {
     command = Serial.readStringUntil('\n');
+    //Serial.println(command);
   }
   
   // Reset
@@ -208,7 +212,7 @@ void zeroMotors() {
   wrist.run();
   digitalWrite(suu, LOW);
   digitalWrite(tuoli, HIGH);
-  // TODO: add all others
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 // Käsivarren poset
@@ -315,6 +319,8 @@ void fill() {
 }
 
 void fillNielu() {
+  digitalWrite(A1, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
@@ -322,8 +328,10 @@ void fillNielu() {
   digitalWrite(tukos, HIGH);
   digitalWrite(nielu, HIGH);
   digitalWrite(tap, HIGH);
-  delay(100);
+  digitalWrite(A1, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
   command = "";
+  delay(100);
 }
 
 void kuse() {
@@ -345,12 +353,11 @@ void tuolia(int on) {
 
 void liikutaSuuta(int amp) {
   if(amp) {
-    // TODO: tarkista suunta!
     digitalWrite(suu, HIGH);
-    digitalWrite(LED_BUILTIN, HIGH);
+    // digitalWrite(LED_BUILTIN, HIGH);
   } else {
     digitalWrite(suu, LOW);
-    digitalWrite(LED_BUILTIN, LOW);
+    // digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
@@ -420,8 +427,13 @@ void fixElbow(int direction) {
 
 // Lasin täyttö -sarja
 void fillerUp() {
-  tuolia(0);
-  delay(50);
+  digitalWrite(A1, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
+  //tuolia(0); included in zeroMotors()
+  //delay(4000); is this really necessary?
+  delay(1000);
+  zeroMotors();
+  while(stillRolling()) zeroMotors();
 
   pose(8);
   while(stillRolling()) pose(8);
@@ -429,15 +441,16 @@ void fillerUp() {
   if(hanasilma.getDistance() < 20) fill();
   if(hanasilma.getDistance() < 20) fill();
   if(hanasilma.getDistance() < 20) fill();
-  
+
+  pose(1);
+  while(stillRolling()) pose(1);
+
+  command = "";
+  digitalWrite(A1, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
   delay(100);
 }
 
 bool stillRolling() {
-  /*Serial.print(elbow.distanceToGo());
-  Serial.print(":");
-  Serial.print(fabs(shoulder.distanceToGo()));
-  Serial.print(":");
-  Serial.println(spreader.distanceToGo());*/
   return elbow.distanceToGo() || fabs(shoulder.distanceToGo()) || spreader.distanceToGo();
 }

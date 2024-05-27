@@ -26,7 +26,7 @@ fillersUp = ["Looks like I need another drink", "I need to fill'er up!", "Runnin
 cls = 14
 s = subject = cue = None
 wasStillSpeaking = 0
-arduinoBusy = True
+arduinoBusy = False
 pose = 1
 output = Output()
 arduino = Arduino()
@@ -35,6 +35,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(15, GPIO.IN) #Lasin uppokytkin
 GPIO.setup(13, GPIO.IN) #Nielun uppokytkin
 GPIO.setup(16, GPIO.OUT) #Suu
+GPIO.setup(18, GPIO.IN) #Arduino busy signal
 
 def exit():
     print("User exit")
@@ -79,6 +80,9 @@ def piss():
     arduino.write('k')
     sleep(8)
 
+def arduinoBusy():
+    return GPIO.input(18);
+
 flush()
 GPIO.output(16, GPIO.HIGH)
 mouth.speak("Alright, I'm on.")
@@ -88,43 +92,38 @@ arduino.write("1")
 sleep(3)
 
 while True:
-    received = arduino.read()
-    if received:
-        print(received)
-        if received == "busy": arduinoBusy = True
-        else: arduinoBusy = False
-        flush()
-        continue
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
             #arduino.write('p'+str(output.read()))
             GPIO.output(16, GPIO.HIGH)
             wasStillSpeaking = time.time()
-            # Tuoli
-            if(random()*10 < 5):
-                arduino.write('c'+str(round(random())))
-            # Käsi
-            if not arduinoBusy:
+            # Only motion if Arduino is idle
+            if not arduinoBusy():
+                print("Arduino is free, so let's motion")
+                # Tuoli
+                if(random()*10 < 5):
+                    arduino.write('c'+str(round(random())))
+                # Käsi
                 if(random()*10 < 7):
                     pose = round(random()*3)
                 if not pose: pose = 1
                 arduino.write(str(pose))
                 
         if not mouth.isSpeaking():
-            GPIO.output(16, GPIO.LOW)                
-            if(time.time() - wasStillSpeaking < 2) and not arduinoBusy:
+            GPIO.output(16, GPIO.LOW)
+            if(time.time() - wasStillSpeaking < 2) and not arduinoBusy():
                 arduino.write("d")
                     
             GPIO.output(16, GPIO.LOW)
             print('\n'*cls)
             flush()
             # Is tuoppi tyhjä?
-            if GPIO.input(15):
+            if GPIO.input(15) and not GPIO.input(18):
                 piss()
                 fillerUp()
             # Is nielu tyhjä?
-            if GPIO.input(13):
+            if GPIO.input(13) and not GPIO.input(18):
                 print("Filling nielu...")
                 flush()
                 arduino.write("n")
