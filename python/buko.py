@@ -80,8 +80,9 @@ def piss():
     arduino.write('k')
     sleep(8)
 
-def arduinoBusy():
-    return GPIO.input(18);
+def isArduinoBusy():
+    #return GPIO.input(18)
+    return arduinoBusy
 
 flush()
 GPIO.output(16, GPIO.HIGH)
@@ -92,6 +93,15 @@ arduino.write("1")
 sleep(3)
 
 while True:
+    received = arduino.read()
+    if received:
+        print(received)
+        flush()
+        if received == "busy":
+            arduinoBusy = True
+        if received == "free":
+            arduinoBusy = False
+            
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
@@ -99,7 +109,7 @@ while True:
             GPIO.output(16, GPIO.HIGH)
             wasStillSpeaking = time.time()
             # Only motion if Arduino is idle
-            if not arduinoBusy():
+            if not isArduinoBusy():
                 print("Arduino is free, so let's motion")
                 # Tuoli
                 if(random()*10 < 5):
@@ -112,7 +122,7 @@ while True:
                 
         if not mouth.isSpeaking():
             GPIO.output(16, GPIO.LOW)
-            if(time.time() - wasStillSpeaking < 2) and not arduinoBusy():
+            if(time.time() - wasStillSpeaking < 2) and not isArduinoBusy():
                 arduino.write("d")
                     
             GPIO.output(16, GPIO.LOW)

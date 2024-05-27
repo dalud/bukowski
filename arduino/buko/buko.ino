@@ -321,6 +321,7 @@ void fill() {
 void fillNielu() {
   digitalWrite(A1, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
+  Serial.println("busy");
   digitalWrite(tukos, LOW);
   digitalWrite(nielu, LOW);
   digitalWrite(tap, LOW);
@@ -330,6 +331,7 @@ void fillNielu() {
   digitalWrite(tap, HIGH);
   digitalWrite(A1, LOW);
   digitalWrite(LED_BUILTIN, LOW);
+  Serial.println("free");
   command = "";
   delay(100);
 }
@@ -429,6 +431,7 @@ void fixElbow(int direction) {
 void fillerUp() {
   digitalWrite(A1, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
+  Serial.println("busy");
   //tuolia(0); included in zeroMotors()
   //delay(4000); is this really necessary?
   delay(1000);
@@ -448,6 +451,7 @@ void fillerUp() {
   command = "";
   digitalWrite(A1, LOW);
   digitalWrite(LED_BUILTIN, LOW);
+  Serial.println("free");
   delay(100);
 }
 
