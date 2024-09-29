@@ -110,7 +110,7 @@ while True:
             wasStillSpeaking = time.time()
             # Only motion if Arduino is idle
             if not isArduinoBusy():
-                print("Arduino is free, so let's motion")
+                #print("Arduino is free, so let's motion")
                 # Tuoli
                 if(random()*10 < 5):
                     arduino.write('c'+str(round(random())))

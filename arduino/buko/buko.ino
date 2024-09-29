@@ -103,12 +103,12 @@ void loop() {
 
   // Kill switch checks
   // TODO: Remember to return to the fold after dev !!!
-  /*if(digitalRead(eks)) fixElbow(1);
+  if(digitalRead(eks)) fixElbow(1);
   if(digitalRead(eks2)) fixElbow(0);
   if(digitalRead(spks)) fixSpreader(1);
   if(digitalRead(spks2)) fixSpreader(0);
   if(digitalRead(shks)) fixShoulder(0);
-  if(digitalRead(shks2)) fixShoulder(1);*/
+  if(digitalRead(shks2)) fixShoulder(1);
   
   // Read command from Serial Bus
   if (Serial.available()) {
