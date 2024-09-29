@@ -122,7 +122,7 @@ while True:
                 fillerUp()
             # Is nielu tyhjä?
             if GPIO.input(13):
-                print("Filling nielu...")
+                print("Filling gullet...")
                 flush()
                 arduino.write("n")
                 sleep(10)

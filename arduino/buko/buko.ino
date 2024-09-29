@@ -286,13 +286,13 @@ void pose(int pose) {
       wrist.run();
       break;
     case 8: // Fill 'er up
-      shoulder.moveTo(-2300);
+      shoulder.moveTo(-2100);
       shoulder.run();
       spreader.moveTo(500);
       spreader.run();
-      elbow.moveTo(1000);
+      elbow.moveTo(800);
       elbow.run();
-      wrist.moveTo(-250);
+      wrist.moveTo(0);
       wrist.run();
       break;
   }
