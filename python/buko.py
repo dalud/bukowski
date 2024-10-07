@@ -62,17 +62,7 @@ def fillerUp():
     mouth.speakAsync(fillersUp[(int)(random()*len(fillersUp))])
     sleep(3)
     GPIO.output(16, GPIO.LOW)
-    #sleep(4)
-    #arduino.write("z")
-    #sleep(4)
-    #print('\n'*cls)
-    #print("Filling glass...")
-    #flush()
     arduino.write("t")
-    #sleep(21)
-    #arduino.write("1")
-    #sleep(4)
-    #print('\n'*cls)
     
 def piss():
     print("Pissing...")
@@ -81,7 +71,6 @@ def piss():
     sleep(8)
 
 def isArduinoBusy():
-    #return GPIO.input(18)
     return arduinoBusy
 
 flush()
@@ -95,22 +84,21 @@ sleep(3)
 while True:
     received = arduino.read()
     if received:
-        print(received)
+        #print(received)
         flush()
         if received == "busy":
             arduinoBusy = True
         if received == "free":
             arduinoBusy = False
+    # print("arduino busy:", isArduinoBusy())
             
     try:
         if mouth.isSpeaking():
             s = subject = cue = None
-            #arduino.write('p'+str(output.read()))
             GPIO.output(16, GPIO.HIGH)
             wasStillSpeaking = time.time()
             # Only motion if Arduino is idle
             if not isArduinoBusy():
-                #print("Arduino is free, so let's motion")
                 # Tuoli
                 if(random()*10 < 5):
                     arduino.write('c'+str(round(random())))
@@ -128,18 +116,17 @@ while True:
             GPIO.output(16, GPIO.LOW)
             print('\n'*cls)
             flush()
+
             # Is tuoppi tyhjä?
-            if GPIO.input(15) and not GPIO.input(18):
+            if GPIO.input(15) and not isArduinoBusy():
                 piss()
                 fillerUp()
             # Is nielu tyhjä?
-            if GPIO.input(13) and not GPIO.input(18):
+            if GPIO.input(13) and not isArduinoBusy():
                 print("Filling nielu...")
                 flush()
                 arduino.write("n")
-                #sleep(10)
-                #print('\n'*cls)
-    
+            
             cue = ear.listen(True, s)
             if cue: subject = sb.parse(cue[0])
             else: subject = None

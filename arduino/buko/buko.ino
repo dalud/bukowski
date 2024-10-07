@@ -4,9 +4,9 @@
 
 // Käden moottorit
 AccelStepper shoulder(1, 10, 11);
-int sh = -2600;
+int sh = -2500;
 AccelStepper spreader(1, 8, 9);
-int sp = 2700;
+int sp = 2500;
 AccelStepper elbow(1, 12, 13);
 int e = 5000;
 AccelStepper wrist(1, 22, 23);
@@ -290,11 +290,11 @@ void pose(int pose) {
       wrist.run();
       break;
     case 8: // Fill 'er up
-      shoulder.moveTo(-2300);
+      shoulder.moveTo(-2500);
       shoulder.run();
       spreader.moveTo(500);
       spreader.run();
-      elbow.moveTo(1000);
+      elbow.moveTo(1500);
       elbow.run();
       wrist.moveTo(-250);
       wrist.run();
@@ -444,6 +444,7 @@ void fillerUp() {
   if(hanasilma.getDistance() < 20) fill();
   if(hanasilma.getDistance() < 20) fill();
   if(hanasilma.getDistance() < 20) fill();
+  delay(2500);
 
   pose(1);
   while(stillRolling()) pose(1);
