@@ -43,9 +43,9 @@ void loop() {
 
   // Silmä arpa
   if(!alea) alea = random(2);
-  if(counter > 100) {
+  if(counter > 150) {
     liikutaSilmia(alea);
-    long stop = random(105, 200);
+    long stop = random(155, 250);
         if(counter > stop) {
       liikutaSilmia(0);
       counter = 0;
@@ -59,15 +59,15 @@ void loop() {
     suu.setSpeed(random(10,70));
     suu.run(suun_suunta);
     digitalWrite(LED_BUILTIN, HIGH);
+    // Luomet arvonta
+    if(random(200) < 1) liikutaLuomia();
+
     delay(10);
   } else {
     suu.run(RELEASE);
     digitalWrite(LED_BUILTIN, LOW);
     delay(10);
   }
-
-  // Luomet arvonta
-  if(random(200) < 1) liikutaLuomia();
   
   delay(10);
 }
@@ -91,7 +91,7 @@ void liikutaLuomia() {
   if (luomien_suunta == 1) luomien_suunta = 2;
   else luomien_suunta = 1;
   luomet.run(luomien_suunta);
-  delay(random(500, 8 00));
+  delay(random(500, 800));
   luomet.run(RELEASE);
   delay(10);
 }
