@@ -102,7 +102,6 @@ void loop() {
   counter++; 
 
   // Kill switch checks
-  // TODO: Remember to return to the fold after dev !!!
   if(digitalRead(eks)) fixElbow(1);
   if(digitalRead(eks2)) fixElbow(0);
   if(digitalRead(spks)) fixSpreader(1);
@@ -356,10 +355,8 @@ void tuolia(int on) {
 void liikutaSuuta(int amp) {
   if(amp) {
     digitalWrite(suu, HIGH);
-    // digitalWrite(LED_BUILTIN, HIGH);
   } else {
     digitalWrite(suu, LOW);
-    // digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
@@ -432,8 +429,6 @@ void fillerUp() {
   digitalWrite(A1, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("busy");
-  //tuolia(0); included in zeroMotors()
-  //delay(4000); is this really necessary?
   delay(1000);
   zeroMotors();
   while(stillRolling()) zeroMotors();
