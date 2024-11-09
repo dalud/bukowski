@@ -148,6 +148,9 @@ while True:
                         sleep(.5)
                         print('\n'*cls)
                         flush()
+                        print(len(reply))
+                        if(len(reply) > 600): reply = reply[0:600]
+                        print(len(reply))
                         mouth.speakAsync(reply)
                         played.append(reply)
                         print(":msg:"+reply)
